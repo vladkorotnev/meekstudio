@@ -35,6 +35,22 @@ namespace MeekStudio.Language
             }
         }
 
+        public Dictionary<string, object> Data
+        {
+            get
+            {
+                return _data;
+            }
+        }
+
+        public Dictionary<string, string> Comments
+        {
+            get
+            {
+                return _comments;
+            }
+        }
+
         private void Parse(string content)
         {
             _data = new Dictionary<string, object>();

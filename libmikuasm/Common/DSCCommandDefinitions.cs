@@ -577,10 +577,11 @@ namespace MikuASM.Commands
         }
     }
 
-    [CmdMnemonic(CommandNumbers.DATA_CAMERA_START, "DATA_CAMERA_START", 1)]
+    [CmdMnemonic(CommandNumbers.DATA_CAMERA_START, "DATA_CAMERA_START", 2)]
     public class Command_DATA_CAMERA_START : DSCCommand
     {
         [FieldOrder(0), CmdArg(0)] public Int32 unk1;
+        [FieldOrder(1), CmdArg(1)] public Int32 unk2;
     }
 
     [CmdMnemonic(CommandNumbers.WIND, "WIND", 3)]

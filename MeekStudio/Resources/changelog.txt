@@ -1,5 +1,8 @@
 ﻿== Changelog for MeekStudio ==
 
+[1.1.2.3]
+- Fix DATA_CAMERA_START arg count being one too low causing some files to be not imported correctly or exported as broken
+
 [1.1.2.2]
 - Hotfix with proper code-generation for branches
 

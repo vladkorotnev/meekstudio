@@ -71,7 +71,6 @@ namespace MikuASM
             if(idToType.ContainsKey(Convert.ToUInt32(key)))
             {
                 type = idToType[Convert.ToUInt32(key)];
-                Console.Error.WriteLine("Emit: {0}", type.Name);
                 return true;
             }
             Console.WriteLine("Unknown key {0} !!", key);

@@ -80,6 +80,21 @@ namespace MikuASM
                 Console.Error.WriteLine(Strings.ErrInjectionFail);
                 return;
             }
+
+            var pluginPath = Path.Combine(Path.GetDirectoryName(exePath), ".env", "meeksbug.plug");
+            if (Directory.Exists(pluginPath))
+            {
+                foreach(var plugin in Directory.GetFiles(pluginPath, "*.dva"))
+                {
+                    rslt = loader.Inject(plugin);
+                    if (!rslt)
+                    {
+                        Console.Error.WriteLine(Strings.ErrInjectionFail+": "+plugin);
+                        return;
+                    }
+                }
+            }
+
             Interop.RemoteProcedure rpc = new Interop.RemoteProcedure(bs.ProcessInfo, dscServer);
 
             Thread.Sleep(200);
