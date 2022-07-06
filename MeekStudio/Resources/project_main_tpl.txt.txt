@@ -1,0 +1,43 @@
+﻿-- Entrypoint file for your project --
+// This is the file where the DSC build will start from
+// Include all scenes and stuff in here
+
+PV_BRANCH_MODE 0 // disable, because not yet supported
+
+
+// You can include a file like this
+#include scenes/first.mia
+#include scenes/second.mia
+
+
+-- Output directives --
+// This is an example of how to output multiple charts from same PV
+// Replace your PV ID
+
+#const OUT_PV_ID=XXX
+
+----- ↓↓↓　Extreme output　↓↓↓ -----
+#ctxstart
+    // Insert chart data
+    #binflt ONLY_CHART
+    @ 0
+    #incbin charts/Extreme.dsc
+    // Update timing data
+    #sort!
+    // Write to file
+    #write build/pv_OUT_PV_ID_extreme.dsc
+#ctxend
+----- ↑↑↑　END Extreme output　↑↑↑ -----
+
+----- ↓↓↓　EXEX output　↓↓↓ -----
+#ctxstart
+    // Insert chart data
+    #binflt ONLY_CHART
+    @ 0
+    #incbin charts/ExtraExtreme.dsc
+    // Update timing data
+    #sort!
+    // Write to file
+    #write build/pv_OUT_PV_ID_extra.dsc
+#ctxend
+----- ↑↑↑　END EXEX output　↑↑↑ -----

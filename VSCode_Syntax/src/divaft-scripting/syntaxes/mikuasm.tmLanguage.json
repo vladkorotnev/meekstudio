@@ -1,0 +1,493 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "MikuASM",
+	"patterns": [
+		{
+			"include": "#preprocessor"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#diva"
+		}
+	],
+	"repository": {
+		"preprocessor": {
+			"patterns": [{
+				"name": "meta.preprocessor",
+				"match": "(#const)"
+			},
+			{
+				"name": "meta.preprocessor",
+				"begin": "(#include|#incbin|#write) ",
+				"end": "$",
+				"patterns": [
+					{
+						"name": "markup.underline.link.$1.hyperlink",
+						"match": "(.+)$"
+					}
+				]
+			},
+			{
+				"name": "meta.preprocessor",
+				"match": "(#binflt|#sort!|#ctxstart|#ctxend)"
+			},
+			{
+				"name": "constant.language",
+				"match": "(?i:(true|false))"
+			},
+			{
+				"name":"constant.numeric",
+				"match": "(\\d+)"	
+			},
+			{
+				"name":"constant.numeric",
+				"match": "(\\d+\\.\\d+)"	
+			}
+		]
+		},
+		"comments": {
+			"name": "comment",
+			"begin": "//|--",
+			"end": "$"
+		},
+		"diva": {
+			"patterns": [
+				{
+					"name": "keyword.invalid",
+					"match": "NOP"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "END"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "PV_END"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "TIME"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "TARGET"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "LYRIC"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MOVIE_PLAY"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MUSIC_PLAY"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MOVIE_DISP"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "CHANGE_FIELD"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "CHARA_SIZE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "TARGET_FLYING_TIME"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MIKU_MOVE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MIKU_ROT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MIKU_DISP"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MIKU_SHADOW"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SET_MOTION"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SET_PLAYDATA"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EFFECT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "FADEIN_FIELD"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EFFECT_OFF"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SET_CAMERA"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "DATA_CAMERA"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "HIDE_FIELD"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MOVE_FIELD"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "FADEOUT_FIELD"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EYE_ANIM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MOUTH_ANIM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "HAND_ANIM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "LOOK_ANIM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EXPRESSION"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "LOOK_CAMERA"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MODE_SELECT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_MOTION"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "BAR_TIME_SET"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SHADOWHEIGHT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_FACE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MOVE_CAMERA"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SHADOWPOS"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_LYRIC"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_TARGET"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_MOUTH"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SET_CHARA"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_MOVE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_SHADOW"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_EYELID"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_EYE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_ITEM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_EFFECT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_DISP"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_HAND_ANIM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "AIM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "HAND_ITEM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_BLUSH"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "NEAR_CLIP"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "CLOTH_WET"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "LIGHT_ROT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SCENE_FADE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "TONE_TRANS"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SATURATE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "FADE_MODE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "AUTO_BLINK"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "PARTS_DISP"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "CHARA_HEIGHT_ADJUST"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "ITEM_ANIM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "CHARA_POS_ADJUST"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SCENE_ROT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MOT_SMOOTH"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "PV_BRANCH_MODE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "DATA_CAMERA_START"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "WIND"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "OSAGE_STEP"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "OSAGE_MV_CCL"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "CHARA_COLOR"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SE_EFFECT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_MOVE_XYZ"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_EYELID_ANIM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_INSTRUMENT_ITEM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_MOTION_LOOP"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_EXPRESSION"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_EYE_ANIM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_MOUTH_ANIM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_CAMERA"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_MODE_SELECT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "PV_END_FADEOUT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "TARGET_FLAG"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "ITEM_ANIM_ATTACH"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SHADOW_RANGE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "HAND_SCALE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "LIGHT_POS"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "FACE_TYPE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SHADOW_CAST"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "EDIT_MOTION_F"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "FOG"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "BLOOM"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "COLOR_COLLE"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "DOF"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "CHARA_ALPHA"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "AOTO_CAP"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MAN_CAP"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "TOON"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "SHIMMER"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "ITEM_ALPHA"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "MOVIE_CUT_CHG"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "CHARA_LIGHT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "STAGE_LIGHT"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "AGEAGE_CTRL"
+				   },
+				   {
+					"name": "keyword.control",
+					"match": "PSE"
+				   }				   
+			]
+		}
+	},
+	"scopeName": "source.miku"
+}

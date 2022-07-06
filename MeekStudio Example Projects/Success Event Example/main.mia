@@ -1,0 +1,66 @@
+// 
+// Example of different movie depending on success
+// 
+// NOTICE: Require MeekStudio 1.1.2.2 or above
+//
+
+// Include constants definitions
+#include consts.mia
+
+// Set binary import to only allow chart related commands
+#binflt ONLY_CHART
+
+// The first command cannot be a branch definition it seems
+// So let's put a useless command in there
+@ 0
+    CHANGE_FIELD 1
+
+/// Define the common branch (before success event)
+PV_BRANCH_MODE BRANCH_COMMON
+// You must ALWAYS load the chart at the 0 time
+@ 0
+    /// Show the lyric "Success Event Test"
+    LYRIC 1
+    /// Leave just one Meek
+    MIKU_DISP 1, false
+    MIKU_DISP 2, false
+    /// Set camera position
+    MOVE_CAMERA 0, -200, 5920, 3160, 0, 6240, 0, 0, 1000, 0, -200, 5920, 3160, 0, 6240, 0, 0, 1000, 0, -1, -1
+    /// Load the actual chart including a success event
+    /// The chart was made with UPDC and exported as FT DSC
+    #incbin charts/common_with_success_note.dsc
+    
+    
+
+/// Define the failure branch (after success event)
+// For ease of use I split at the same point here, using a
+// constant for the time value specified in consts.mia
+PV_BRANCH_MODE BRANCH_FAILURE
+@ BRANCH_SPLIT_TIME
+    /// Display the burning effect
+    EDIT_EFFECT 1, 1000
+    /// Show the lyric "You fail!!"
+    LYRIC 2
+    /// Change face
+    SET_CHARA 0
+    EDIT_EXPRESSION 22, 100
+    EDIT_MOUTH 4
+
+/// Define the success branch (after success event)
+PV_BRANCH_MODE BRANCH_SUCCESS
+@ BRANCH_SPLIT_TIME
+    /// Change to another stage for success
+    CHANGE_FIELD 2
+    /// Show hearts effect
+    EDIT_EFFECT 0, 1000
+    /// Show the lyric "You succeed!!"
+    LYRIC 3
+    /// Change face
+    SET_CHARA 0
+    EDIT_EXPRESSION 1, 100
+    EDIT_MOUTH 23
+
+/// Align all timings
+#sort!
+/// Write the final output chart file
+#write output/test.dsc

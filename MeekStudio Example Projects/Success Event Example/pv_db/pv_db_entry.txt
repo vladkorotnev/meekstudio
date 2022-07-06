@@ -1,0 +1,45 @@
+# Template file from MeekStudio
+pv_420.bpm=100
+pv_420.date=20120927
+pv_420.difficulty.attribute.original=1
+pv_420.difficulty.easy.0.edition=0
+pv_420.difficulty.easy.0.level=PV_LV_08_5
+pv_420.difficulty.easy.0.level_sort_index=0
+pv_420.difficulty.easy.0.script_file_name=rom/script/test.dsc
+pv_420.difficulty.easy.0.script_format=0x14012316
+pv_420.difficulty.easy.0.version=1
+pv_420.difficulty.easy.length=1
+pv_420.difficulty.encore.length=0
+pv_420.difficulty.extreme.length=0
+pv_420.difficulty.hard.length=0
+pv_420.difficulty.normal.length=0
+pv_420.edit=1
+pv_420.edit_chara_scale=1
+# Effect 007: Hearts
+pv_420.edit_effect.00=007
+# Effect 004: Burning
+pv_420.edit_effect.01=004
+pv_420.field.01.spr_set_back=SPR_EDIT_D2PVBACKBLACK
+pv_420.field.length=2
+pv_420.hidden_timing=0.3
+pv_420.high_speed_rate=4
+pv_420.lyric.001=Success Event Test
+pv_420.lyric.002=You FAIL!!
+pv_420.lyric.003=You Succeed!!
+pv_420.motion.00=CMN_MRA00_13_01
+pv_420.motion.01=PV600_CAT_P1_00
+pv_420.motion2P.00=CMN_MRA00_13_01
+pv_420.motion2P.01=PV600_CAT_P1_00
+pv_420.motion3P.00=CMN_MRA00_13_01
+pv_420.motion3P.01=PV600_CAT_P1_00
+pv_420.performer.0.chara=MIK
+pv_420.performer.0.pv_costume=1
+pv_420.performer.0.size=PLAY_CHARA
+pv_420.performer.0.type=VOCAL
+pv_420.performer.num=1
+pv_420.pvbranch_success_se_name=pvchange04
+pv_420.se_name=02_button2
+pv_420.song_file_name=rom/sound/song/pv_420.ogg
+pv_420.song_name=Success Event Test
+pv_420.song_name_reading=さくせすいべんとてすと
+pv_420.sudden_timing=0.6

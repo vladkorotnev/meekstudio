@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BinFltSts" xml:space="preserve">
+    <value>Binary import filtering is now {0}</value>
+  </data>
+  <data name="ClrBuf" xml:space="preserve">
+    <value>Cleared output buffer</value>
+  </data>
+  <data name="ConstDef" xml:space="preserve">
+    <value>Defined {0}={1}</value>
+  </data>
+  <data name="ConstUndef" xml:space="preserve">
+    <value>Undefined {0}</value>
+  </data>
+  <data name="CtxPop" xml:space="preserve">
+    <value>Returned to context {0}</value>
+  </data>
+  <data name="CtxPush" xml:space="preserve">
+    <value>Pushed into context {0}</value>
+  </data>
+  <data name="Emit" xml:space="preserve">
+    <value>{0}: emitted {1} from {2}</value>
+  </data>
+  <data name="ErrArgCount" xml:space="preserve">
+    <value>Argument count mismatched.</value>
+  </data>
+  <data name="ErrArgCountLen" xml:space="preserve">
+    <value>Not enough arguments: expected {0}, but have {1}</value>
+  </data>
+  <data name="ErrBranchCount" xml:space="preserve">
+    <value>Using more than 3 branches does not look valid.</value>
+  </data>
+  <data name="ErrCmdNotFound" xml:space="preserve">
+    <value>Unknown command {0}</value>
+  </data>
+  <data name="ErrConstSyntax" xml:space="preserve">
+    <value>Incorrect const syntax</value>
+  </data>
+  <data name="ErrConstSyntaxDetail" xml:space="preserve">
+    <value>Example: #const name=value</value>
+  </data>
+  <data name="ErrForArgs" xml:space="preserve">
+    <value>Incorrect argument count for {0}</value>
+  </data>
+  <data name="ErrForArgsDetail" xml:space="preserve">
+    <value>Specify args in sets of VARNAME START END STEP</value>
+  </data>
+  <data name="ErrInjectionFail" xml:space="preserve">
+    <value>Injection failed</value>
+  </data>
+  <data name="ErrKwUndef" xml:space="preserve">
+    <value>Cannot undefine a keyword</value>
+  </data>
+  <data name="ErrNoCommonCmd" xml:space="preserve">
+    <value>There are no common branch commands in the script.</value>
+  </data>
+  <data name="ErrNotExist" xml:space="preserve">
+    <value>{0} does not exist!</value>
+  </data>
+  <data name="ErrProcAmbiguous" xml:space="preserve">
+    <value>Process name ambiguous: {0}</value>
+  </data>
+  <data name="ErrProcNotFound" xml:space="preserve">
+    <value>Process not found: {0}</value>
+  </data>
+  <data name="ErrRallocFail" xml:space="preserve">
+    <value>Remote alloc failed: 0x{0:X}</value>
+  </data>
+  <data name="ErrRedef" xml:space="preserve">
+    <value>Name already defined.</value>
+  </data>
+  <data name="ErrRthreadFail" xml:space="preserve">
+    <value>Remote thread creation failed: 0x{0:X} (thread result 0x{0:X})</value>
+  </data>
+  <data name="ErrRwriteFail" xml:space="preserve">
+    <value>Remote write failed: 0x{0:X}</value>
+  </data>
+  <data name="ErrTopCtx" xml:space="preserve">
+    <value>No open context to close.</value>
+  </data>
+  <data name="ErrTopCtxDetail" xml:space="preserve">
+    <value>Start a context with #ctxstart prior to closing it.</value>
+  </data>
+  <data name="ErrUnexpected" xml:space="preserve">
+    <value>Unexpected {0}</value>
+  </data>
+  <data name="ErrUnknownCmd" xml:space="preserve">
+    <value>Command or identifier unknown.</value>
+  </data>
+  <data name="ErrUnknownPrepro" xml:space="preserve">
+    <value>Invalid preprocessor directive.</value>
+  </data>
+  <data name="ErrUnko" xml:space="preserve">
+    <value>Found an unko.</value>
+  </data>
+  <data name="ForceStop" xml:space="preserve">
+    <value>Unko!</value>
+  </data>
+  <data name="GotHandle" xml:space="preserve">
+    <value>Got handle {0}</value>
+  </data>
+  <data name="IncBin" xml:space="preserve">
+    <value>Adding {0} commands from binary {1}</value>
+  </data>
+  <data name="Including" xml:space="preserve">
+    <value>Reading {0}</value>
+  </data>
+  <data name="InfForLoop" xml:space="preserve">
+    <value>Infinite sequence definition for {0}</value>
+  </data>
+  <data name="InfForLoopDetail" xml:space="preserve">
+    <value>The sequence does not converge with the defined range and step values in a finite number of steps.</value>
+  </data>
+  <data name="OutsideError" xml:space="preserve">
+    <value>This didn't originate from the MikuASM compiler engine...</value>
+  </data>
+  <data name="PrintSrcError" xml:space="preserve">
+    <value>Source code error: 
+    {0}</value>
+  </data>
+  <data name="PrintSrcErrorExpand" xml:space="preserve">
+    <value>    expanded from: 
+        {0}</value>
+  </data>
+  <data name="PrintSrcErrorHelp" xml:space="preserve">
+    <value>Extra reference: 
+{0}</value>
+  </data>
+  <data name="PrintSrcErrorLoc" xml:space="preserve">
+    <value>    at {0} line {1}: 
+        {2}</value>
+  </data>
+  <data name="RthreadCreate" xml:space="preserve">
+    <value>Created remote thread {0}</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Sorting timeblocks</value>
+  </data>
+  <data name="StsInjected" xml:space="preserve">
+    <value>Debug server injected</value>
+  </data>
+  <data name="StsInjecting" xml:space="preserve">
+    <value>Injecting debug bridge into PID {0} / pHandle {1}...</value>
+  </data>
+  <data name="Subst" xml:space="preserve">
+    <value>Substituted: {0} into {1}</value>
+  </data>
+  <data name="Verbose" xml:space="preserve">
+    <value>Extensive logging enabled as per #chatty</value>
+  </data>
+  <data name="WriteBuf" xml:space="preserve">
+    <value>Writing current buffer to {0}</value>
+  </data>
+</root>

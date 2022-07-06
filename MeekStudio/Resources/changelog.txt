@@ -1,0 +1,29 @@
+﻿== Changelog for MeekStudio ==
+
+[1.1.2.2]
+- Hotfix with proper code-generation for branches
+
+[1.1.2.0]
+- Fix bug where pressing Ctl-Z right after opening a file resulted in full loss of it's content
+- Support branch overlap: now whatever is in COMMON branch will be replicated into both failure and success if they overlap
+
+[1.1.1.0]
+- Add decompile view for DSC
+
+[1.1.0.1]
+- Fix crash when typing in a const directive
+- Fix #bintime filter
+
+[1.1.0.0]
+- Add icons and toolbar
+- Add support for PV_BRANCH_MODE when using timeblock sorting
+- Add support for inputting time in other formats, such as MM:ss.ms or F(Frame) or ss.ms
+- Add new precompiler directives: "#for VARNAME start end step ..." and "#endfor"
+- Allow inputting booleans as 1 or 0
+
+[1.0.1.0]
+- Fix a bug where decimal point separator settings of the local user caused build to fail
+- Tidy up the debug attachment UI flow
+
+[1.0.0.0]
+- Initial version

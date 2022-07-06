@@ -1,0 +1,19 @@
+//
+// MeekStudio Sample Project
+// Adding lyrics to a UPDC chart
+//
+
+@ 0
+PV_BRANCH_MODE 0
+/// In the beginning, load a chart DSC (FT) created in UPDC
+#binflt NO_FILTER
+#incbin charts/common_with_success_note.dsc
+
+/// Then add your lyrics
+#include lyrics.mia
+
+/// Mix everything together
+#sort!
+
+/// And you're done!
+#write output/test.dsc

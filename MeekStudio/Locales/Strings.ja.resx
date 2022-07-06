@@ -1,0 +1,329 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutText" xml:space="preserve">
+    <value>MeekStudio is an integrated environment for writing scripts in MikuASM and compiling/debugging them using certain game software.
+
+[MeekStudio Credits]
+This software uses the ScintillaNET syntax highlighting text editor component by jacobslusser, licensed under the MIT license as of 2020/11/15.
+Github link for ScintillaNET: https://github.com/jacobslusser/ScintillaNET
+
+The icon used in the Welcome dialog and as the application icon was designed by @hatsune_negame: https://twitter.com/hatsune_negame
+
+[libmikuasm Credits]
+This language support library is based upon the DSC commandset research done by samyuu, nastys, Waelwindows, korenkonder, and the other fine folks on discord.
+
+For DSC file reading and writing libmikuasm is using BinarySerializer by jefffhaynes, licensed under the MIT license as of 2020/11/15. 
+Github link for BinarySerializer: https://github.com/jefffhaynes/BinarySerializer
+
+The Interop interface for libmikuasm uses parts of binary patches taken from samyuu's TLAC and PD Loader.
+Github link for TLAC: https://github.com/samyuu/TotallyLegitArcadeController
+NotABug link for PD Loader: https://notabug.org/PDModdingCommunity/PD-Loader/
+
+The Interop interface also incorporates the No OPD Patch by Skyth.
+
+[DSCDebugServer Credits]
+
+DSCDebugServer uses Microsoft Detours licensed under MIT License as of 2020/11/15.
+Github link for Detours: https://github.com/microsoft/Detours
+
+DSCDebugServer incorporates a modified FastBoot routine and some headers (InputState, ButtonState, GameState, SubGameState) from samyuu's TLAC.
+See the above part for source code link to TLAC.</value>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>{0}のバージョン情報</value>
+  </data>
+  <data name="AboutVersion" xml:space="preserve">
+    <value>Version {0}</value>
+  </data>
+  <data name="BtnAnimate" xml:space="preserve">
+    <value>再生</value>
+  </data>
+  <data name="BtnAnimating" xml:space="preserve">
+    <value>再生中</value>
+  </data>
+  <data name="BuildErrorTitle" xml:space="preserve">
+    <value>ビルドエラー</value>
+  </data>
+  <data name="CloseProjectMsg" xml:space="preserve">
+    <value>プロジェクト {0} を保存して閉じるよろしいですか？</value>
+  </data>
+  <data name="CloseProjectTitle" xml:space="preserve">
+    <value>プロジェクトを閉じる</value>
+  </data>
+  <data name="ConfirmTitle" xml:space="preserve">
+    <value>確認</value>
+    <comment>Dialog title</comment>
+  </data>
+  <data name="DecompileError" xml:space="preserve">
+    <value>データ解析に失敗しました。</value>
+  </data>
+  <data name="DecompileTitle" xml:space="preserve">
+    <value>解析：{0}</value>
+  </data>
+  <data name="DeleteMsg" xml:space="preserve">
+    <value>{0}を削除します、よろしいですか？</value>
+    <comment>Dialog message</comment>
+  </data>
+  <data name="ErrAlreadyProject" xml:space="preserve">
+    <value>このフォルダーは既にプロジェクトが入ってます。</value>
+  </data>
+  <data name="ErrBuildFailure" xml:space="preserve">
+    <value>ビルドに失敗しました。</value>
+  </data>
+  <data name="ErrGameExeNotFound" xml:space="preserve">
+    <value>ゲームアプリのEXEは設定されないか存在しません。</value>
+  </data>
+  <data name="ErrNoEditor" xml:space="preserve">
+    <value>編集中のスクリプトがありません。</value>
+  </data>
+  <data name="ErrNoProject" xml:space="preserve">
+    <value>プロジェクトを開いてください。</value>
+  </data>
+  <data name="ErrNotProject" xml:space="preserve">
+    <value>プロジェクトフォルダーではありません。</value>
+  </data>
+  <data name="ErrNotSet" xml:space="preserve">
+    <value>{0} は未設定か存在しません。</value>
+  </data>
+  <data name="FailureTitle" xml:space="preserve">
+    <value>失敗</value>
+  </data>
+  <data name="HlpNoneAvail" xml:space="preserve">
+    <value>説明文章がありません。</value>
+  </data>
+  <data name="ImportFileTitle" xml:space="preserve">
+    <value>ファイルのインポート</value>
+    <comment>Dialog title</comment>
+  </data>
+  <data name="MnuAddFile" xml:space="preserve">
+    <value>ファイルのインポート</value>
+  </data>
+  <data name="MnuDelFile" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="MnuEvalFile" xml:space="preserve">
+    <value>ファイルを実行</value>
+  </data>
+  <data name="MnuNewFile" xml:space="preserve">
+    <value>ファイル作成</value>
+  </data>
+  <data name="MnuNewFolder" xml:space="preserve">
+    <value>フォルダー作成</value>
+  </data>
+  <data name="MnuPvDb" xml:space="preserve">
+    <value>PVDB</value>
+  </data>
+  <data name="MnuPvDbCleanUp" xml:space="preserve">
+    <value>クリーンアップ</value>
+  </data>
+  <data name="MnuRenFile" xml:space="preserve">
+    <value>名称変更</value>
+  </data>
+  <data name="MnuSetAs" xml:space="preserve">
+    <value>ファイル登録</value>
+  </data>
+  <data name="MsgPreviewing" xml:space="preserve">
+    <value>プレビュー再生中です。続くようにプレビューを終了してください。</value>
+  </data>
+  <data name="MsgWaitSelector" xml:space="preserve">
+    <value>ゲームアプリの楽曲一覧画面を表示させてOKを押してください。</value>
+  </data>
+  <data name="OpenProjectTitle" xml:space="preserve">
+    <value>プロジェクトのフォルダーを選択してください。</value>
+  </data>
+  <data name="SelectFolderTitle" xml:space="preserve">
+    <value>プロジェクトのフォルダーを選択してください。</value>
+  </data>
+  <data name="StsBuildFinish" xml:space="preserve">
+    <value>ビルドに成功しました （{0} s）</value>
+  </data>
+  <data name="StsBuildStart" xml:space="preserve">
+    <value>ビルド開始：{0}</value>
+  </data>
+  <data name="StsCannotChgThing" xml:space="preserve">
+    <value> {0}を登録できませんでした。</value>
+  </data>
+  <data name="StsChangedThing" xml:space="preserve">
+    <value>{1} を {0} として登録しました。</value>
+  </data>
+  <data name="StsCompile" xml:space="preserve">
+    <value>コンパイル：{0}</value>
+  </data>
+  <data name="StsDecompiled" xml:space="preserve">
+    <value>{0}：解析完了 （{1} s）</value>
+  </data>
+  <data name="StsDecompileError" xml:space="preserve">
+    <value>{0}： 解析失敗（{1}）</value>
+  </data>
+  <data name="StsEmit" xml:space="preserve">
+    <value>出力：{0}</value>
+  </data>
+  <data name="StsEval" xml:space="preserve">
+    <value>実行：{0}</value>
+  </data>
+  <data name="StsGameAttached" xml:space="preserve">
+    <value>ゲームアプリに接続しました。</value>
+  </data>
+  <data name="StsGameDetached" xml:space="preserve">
+    <value>ゲームアプリから接続中断しました。</value>
+  </data>
+  <data name="StsGameNotAttached" xml:space="preserve">
+    <value>ゲームアプリに接続していません。</value>
+  </data>
+  <data name="StsNotScript" xml:space="preserve">
+    <value>編集中ファイルはスクリプトではありません。</value>
+  </data>
+  <data name="StsProjectClose" xml:space="preserve">
+    <value>プロジェクトを閉まりました。</value>
+  </data>
+  <data name="StsProjectNew" xml:space="preserve">
+    <value>{0} を新規作成しました。</value>
+  </data>
+  <data name="StsProjectOpen" xml:space="preserve">
+    <value>{0} を読み込みしました。</value>
+  </data>
+  <data name="StsPvDbCleanedUp" xml:space="preserve">
+    <value>クリーンアップに成功しました。</value>
+  </data>
+  <data name="StsStartingDebug" xml:space="preserve">
+    <value>ゲームアプリのデバッグ起動中</value>
+  </data>
+  <data name="StsStartingPreview" xml:space="preserve">
+    <value>プレビュー起動中</value>
+  </data>
+  <data name="StsWaitReattach" xml:space="preserve">
+    <value>ゲームアプリに再接続の待機中</value>
+  </data>
+  <data name="ThingEntrypoint" xml:space="preserve">
+    <value>エントリーポイント</value>
+  </data>
+  <data name="ThingMovieAudio" xml:space="preserve">
+    <value>音声データ</value>
+  </data>
+  <data name="ThingMovieDsc" xml:space="preserve">
+    <value>動画スクリプト出力データ</value>
+  </data>
+  <data name="ThingPvDb" xml:space="preserve">
+    <value>PV DB データ</value>
+  </data>
+  <data name="WaitSelectorTitle" xml:space="preserve">
+    <value>ゲームアプリに接続</value>
+  </data>
+</root>

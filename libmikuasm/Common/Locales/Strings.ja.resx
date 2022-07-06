@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BinFltSts" xml:space="preserve">
+    <value>バイナリー入力フィルターを {0} にしました</value>
+  </data>
+  <data name="ClrBuf" xml:space="preserve">
+    <value>出力バッファーを削除しました</value>
+  </data>
+  <data name="ConstDef" xml:space="preserve">
+    <value>定義：{0}={1}</value>
+  </data>
+  <data name="ConstUndef" xml:space="preserve">
+    <value>定義：{0} を削除しました</value>
+  </data>
+  <data name="CtxPop" xml:space="preserve">
+    <value>コンテキスト {0}　に戻りました</value>
+  </data>
+  <data name="CtxPush" xml:space="preserve">
+    <value>コンテキスト {0}　に移動しました</value>
+  </data>
+  <data name="Emit" xml:space="preserve">
+    <value>{0}: 出力　{1}  （元：{2}）</value>
+  </data>
+  <data name="ErrArgCount" xml:space="preserve">
+    <value>不定引数</value>
+  </data>
+  <data name="ErrArgCountLen" xml:space="preserve">
+    <value>引数が異常 {0}個必要ですが{1}個定義されます</value>
+  </data>
+  <data name="ErrBranchCount" xml:space="preserve">
+    <value>ブランチ３個以上は非対応です</value>
+  </data>
+  <data name="ErrCmdNotFound" xml:space="preserve">
+    <value>コマンド不明： {0}</value>
+  </data>
+  <data name="ErrConstSyntax" xml:space="preserve">
+    <value>定義シンタックス不正</value>
+  </data>
+  <data name="ErrConstSyntaxDetail" xml:space="preserve">
+    <value>例）#const 名称=値</value>
+  </data>
+  <data name="ErrForArgs" xml:space="preserve">
+    <value>引数不正： {0}</value>
+  </data>
+  <data name="ErrForArgsDetail" xml:space="preserve">
+    <value>次のフォーマットで4個ずつ定義してください：名称　スタート値　ストップ値　ステップ</value>
+  </data>
+  <data name="ErrInjectionFail" xml:space="preserve">
+    <value>プロセス接続失敗</value>
+  </data>
+  <data name="ErrKwUndef" xml:space="preserve">
+    <value>キーワードの定義を削除できません</value>
+  </data>
+  <data name="ErrNoCommonCmd" xml:space="preserve">
+    <value>共通ブランチにてコマンドは1個もありません。</value>
+  </data>
+  <data name="ErrNotExist" xml:space="preserve">
+    <value>{0} は存在しません。</value>
+  </data>
+  <data name="ErrProcAmbiguous" xml:space="preserve">
+    <value>プロセス{0}が複数あります。</value>
+  </data>
+  <data name="ErrProcNotFound" xml:space="preserve">
+    <value>プロセス{0}が存在しません。</value>
+  </data>
+  <data name="ErrRallocFail" xml:space="preserve">
+    <value>リモートメモリー登録エラー 0x{0:X}</value>
+  </data>
+  <data name="ErrRedef" xml:space="preserve">
+    <value>定義済み値の再指定</value>
+  </data>
+  <data name="ErrRthreadFail" xml:space="preserve">
+    <value>リモートスレッドエラー　0x{0:X} (結果コード 0x{0:X})</value>
+  </data>
+  <data name="ErrRwriteFail" xml:space="preserve">
+    <value>リモートメモリー書き込みエラー 0x{0:X}</value>
+  </data>
+  <data name="ErrTopCtx" xml:space="preserve">
+    <value>ルートコンテキストを閉じられません。</value>
+  </data>
+  <data name="ErrTopCtxDetail" xml:space="preserve">
+    <value>先に#ctxstartでコンテキストを開いてください。</value>
+  </data>
+  <data name="ErrUnexpected" xml:space="preserve">
+    <value>{0}　？</value>
+  </data>
+  <data name="ErrUnknownCmd" xml:space="preserve">
+    <value>コマンドや定義を見つかりません。</value>
+  </data>
+  <data name="ErrUnknownPrepro" xml:space="preserve">
+    <value>不明プリプロセッサコマンド</value>
+  </data>
+  <data name="ErrUnko" xml:space="preserve">
+    <value>うんこを発見しました</value>
+  </data>
+  <data name="ForceStop" xml:space="preserve">
+    <value>うんこ</value>
+  </data>
+  <data name="GotHandle" xml:space="preserve">
+    <value>ハンドル取得： {0}</value>
+  </data>
+  <data name="IncBin" xml:space="preserve">
+    <value>{0}個コマンドをバイナリーデータ {1} から読み込み</value>
+  </data>
+  <data name="Including" xml:space="preserve">
+    <value>{0}から読み込み</value>
+  </data>
+  <data name="InfForLoop" xml:space="preserve">
+    <value>無限直列定義： {0}</value>
+  </data>
+  <data name="InfForLoopDetail" xml:space="preserve">
+    <value>指定されたステップ値で直列が収束しません。</value>
+  </data>
+  <data name="OutsideError" xml:space="preserve">
+    <value>コンパイラーの外部エラーでした。</value>
+  </data>
+  <data name="PrintSrcError" xml:space="preserve">
+    <value>ソース上のエラー: 
+    {0}</value>
+  </data>
+  <data name="PrintSrcErrorExpand" xml:space="preserve">
+    <value>    変換元: 
+        {0}</value>
+  </data>
+  <data name="PrintSrcErrorHelp" xml:space="preserve">
+    <value>修復情報: 
+{0}</value>
+  </data>
+  <data name="PrintSrcErrorLoc" xml:space="preserve">
+    <value>    ファイル{0} の{1}行目: 
+        {2}</value>
+  </data>
+  <data name="RthreadCreate" xml:space="preserve">
+    <value>リモートスレッド開始： {0}</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>タイム順ソート行います</value>
+  </data>
+  <data name="StsInjected" xml:space="preserve">
+    <value>デバッグサーバー起動成功</value>
+  </data>
+  <data name="StsInjecting" xml:space="preserve">
+    <value>デバッグサーバー起動：PID {0} / pHandle {1}...</value>
+  </data>
+  <data name="Subst" xml:space="preserve">
+    <value>変換：{0} → {1}</value>
+  </data>
+  <data name="Verbose" xml:space="preserve">
+    <value>ログ拡張モード有効</value>
+  </data>
+  <data name="WriteBuf" xml:space="preserve">
+    <value>バイナリーデータ書き込み：{0}</value>
+  </data>
+</root>

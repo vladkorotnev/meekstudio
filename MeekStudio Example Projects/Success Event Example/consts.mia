@@ -1,0 +1,8 @@
+//
+// Constants definitions for convenience
+//
+#const BRANCH_COMMON=0
+#const BRANCH_SUCCESS=2
+#const BRANCH_FAILURE=1
+
+#const BRANCH_SPLIT_TIME=3250

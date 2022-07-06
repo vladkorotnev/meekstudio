@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AUTO_BLINK" xml:space="preserve">
+    <value>Запускает автоматическое моргание глаз у персонажа</value>
+  </data>
+  <data name="BAR_TIME_SET" xml:space="preserve">
+    <value>Установка частоты метронома (не используется?)</value>
+  </data>
+  <data name="CHANGE_FIELD" xml:space="preserve">
+    <value>Вызывает сцену соответственно выбранному слоту БД</value>
+  </data>
+  <data name="CHARA_COLOR" xml:space="preserve">
+    <value>Настраивает цвет персонажа</value>
+  </data>
+  <data name="CHARA_HEIGHT_ADJUST" xml:space="preserve">
+    <value>Настраивает высоту персонажа</value>
+  </data>
+  <data name="CHARA_SIZE" xml:space="preserve">
+    <value>Настраивает размер персонажа</value>
+  </data>
+  <data name="CLOTH_WET" xml:space="preserve">
+    <value>Настраивает эффект влажности (затемнение) одежды персонажа</value>
+  </data>
+  <data name="DATA_CAMERA" xml:space="preserve">
+    <value>Воспроизводит анимацию камеры из БД камеры</value>
+  </data>
+  <data name="EDIT_BLUSH" xml:space="preserve">
+    <value>Настраивает покраснение персонажа</value>
+  </data>
+  <data name="EDIT_CAMERA" xml:space="preserve">
+    <value>Анимация камеры между точками с ускорением</value>
+  </data>
+  <data name="EDIT_DISP" xml:space="preserve">
+    <value>Включает или выключает показ редактируемого персонажа</value>
+  </data>
+  <data name="EDIT_FACE" xml:space="preserve">
+    <value>Выставляет лицо редактируемого персонажа</value>
+  </data>
+  <data name="EDIT_SHADOW" xml:space="preserve">
+    <value>Включает или выключает тень редактируемого персонажа</value>
+  </data>
+  <data name="EFFECT_OFF" xml:space="preserve">
+    <value>Останавливает эффект в соответствующем слоте</value>
+  </data>
+  <data name="END" xml:space="preserve">
+    <value>Маркер конца файла, останавливает интерпретатор и заканчивает воспроизведение</value>
+  </data>
+  <data name="EXPRESSION" xml:space="preserve">
+    <value>Воспроизводит запрошенное выражение лица из БД лиц</value>
+  </data>
+  <data name="EYE_ANIM" xml:space="preserve">
+    <value>Воспроизводит анимацию глаз</value>
+  </data>
+  <data name="HAND_ANIM" xml:space="preserve">
+    <value>Воспроизводит анимацию рук</value>
+  </data>
+  <data name="HIDE_FIELD" xml:space="preserve">
+    <value>Показывает или скрывает сцену</value>
+  </data>
+  <data name="LOOK_ANIM" xml:space="preserve">
+    <value>Направляет взгляд персонажа в указанную точку</value>
+  </data>
+  <data name="LYRIC" xml:space="preserve">
+    <value>Отображает строку слов песни по заданному номеру</value>
+  </data>
+  <data name="MIKU_DISP" xml:space="preserve">
+    <value>Показывает или скрывает персонажа</value>
+  </data>
+  <data name="MIKU_MOVE" xml:space="preserve">
+    <value>Перемещает персонажа на заданную точку</value>
+  </data>
+  <data name="MIKU_ROT" xml:space="preserve">
+    <value>Поворачивает персонажа на заданный угол в градусах</value>
+  </data>
+  <data name="MIKU_SHADOW" xml:space="preserve">
+    <value>Показывает или скрывает тень персонажа</value>
+  </data>
+  <data name="MOUTH_ANIM" xml:space="preserve">
+    <value>Анимирует рот персонажа</value>
+  </data>
+  <data name="MOVE_CAMERA" xml:space="preserve">
+    <value>Перемещает камеру между двух точек за указанное время и с указанной длительностью ускорения и замедления</value>
+  </data>
+  <data name="MOVE_FIELD" xml:space="preserve">
+    <value>Смещает сцену</value>
+  </data>
+  <data name="MOVIE_DISP" xml:space="preserve">
+    <value>Показывает или скрывает слой видео</value>
+  </data>
+  <data name="MOVIE_PLAY" xml:space="preserve">
+    <value>Запускает воспроизведение видео</value>
+  </data>
+  <data name="MUSIC_PLAY" xml:space="preserve">
+    <value>Запускает воспроизведение музыки</value>
+  </data>
+  <data name="NEAR_CLIP" xml:space="preserve">
+    <value>Переключает камеру на крупный план?</value>
+  </data>
+  <data name="none" xml:space="preserve">
+    <value>Справка недоступна для этой команды.</value>
+  </data>
+  <data name="PV_BRANCH_MODE" xml:space="preserve">
+    <value>Переключает ветку сценария, где 0 - общая, 1 - безуспешная, 2 - успешная.</value>
+  </data>
+  <data name="PV_END" xml:space="preserve">
+    <value>Конец фильма. Останавливает аудио и завершает показ фильма.</value>
+  </data>
+  <data name="SATURATE" xml:space="preserve">
+    <value>Настраивает насыщенность цвета. Можно указывать значение, проценты или десятичные доли.</value>
+  </data>
+  <data name="SCENE_FADE" xml:space="preserve">
+    <value>Закрывает или открывает изображение выбранным цветом за заданное время</value>
+  </data>
+  <data name="SET_CAMERA" xml:space="preserve">
+    <value>Выставляет позицию камеры?</value>
+  </data>
+  <data name="SET_CHARA" xml:space="preserve">
+    <value>Выбирает персонажа для редактирования</value>
+  </data>
+  <data name="SET_MOTION" xml:space="preserve">
+    <value>Вызывает движение для персонажа из БД</value>
+  </data>
+  <data name="SE_EFFECT" xml:space="preserve">
+    <value>Воспроизводит звук успеха по заданному номеру</value>
+  </data>
+  <data name="SHADOWHEIGHT" xml:space="preserve">
+    <value>Выставляет высоту теней персонажа</value>
+  </data>
+  <data name="TARGET" xml:space="preserve">
+    <value>Создаёт мишень на экране</value>
+  </data>
+  <data name="TARGET_FLYING_TIME" xml:space="preserve">
+    <value>Выставляет скорость мишеней</value>
+  </data>
+  <data name="TIME" xml:space="preserve">
+    <value>Маркер времени. Если текущее время меньше заданного, ждёт до наступления него, иначе не делает ничего. Можно задавать в миллисекундах, мм:сс.мс или сс.мс.</value>
+  </data>
+  <data name="WIND" xml:space="preserve">
+    <value>Выставляет ветер для персонажа</value>
+  </data>
+</root>

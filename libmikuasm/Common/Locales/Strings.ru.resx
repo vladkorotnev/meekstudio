@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BinFltSts" xml:space="preserve">
+    <value>Фильтр бинарных данных теперь {0}</value>
+  </data>
+  <data name="ClrBuf" xml:space="preserve">
+    <value>Выходной буфер очищен</value>
+  </data>
+  <data name="ConstDef" xml:space="preserve">
+    <value>Определено {0}={1}</value>
+  </data>
+  <data name="ConstUndef" xml:space="preserve">
+    <value>Определение {0} удалено</value>
+  </data>
+  <data name="CtxPop" xml:space="preserve">
+    <value>Возврат в контекст {0}</value>
+  </data>
+  <data name="CtxPush" xml:space="preserve">
+    <value>Переход в контекст {0}</value>
+  </data>
+  <data name="Emit" xml:space="preserve">
+    <value>{0}: выдача {1} из {2}</value>
+  </data>
+  <data name="ErrArgCount" xml:space="preserve">
+    <value>Неверное число аргументов.</value>
+  </data>
+  <data name="ErrArgCountLen" xml:space="preserve">
+    <value>Не хватает аргументов: нужно {0}, указано {1}</value>
+  </data>
+  <data name="ErrBranchCount" xml:space="preserve">
+    <value>Больше 3 ветвей не может быть</value>
+  </data>
+  <data name="ErrCmdNotFound" xml:space="preserve">
+    <value>Неизвестная команда {0}</value>
+  </data>
+  <data name="ErrConstSyntax" xml:space="preserve">
+    <value>Некорректный синтаксис константы</value>
+  </data>
+  <data name="ErrConstSyntaxDetail" xml:space="preserve">
+    <value>Пример: #const ИМЯ=значение</value>
+  </data>
+  <data name="ErrForArgs" xml:space="preserve">
+    <value>Неверное число аргументов для {0}</value>
+  </data>
+  <data name="ErrForArgsDetail" xml:space="preserve">
+    <value>Укажите аргументы квартетами ИМЯ НАЧАЛО КОНЕЦ ШАГ</value>
+  </data>
+  <data name="ErrInjectionFail" xml:space="preserve">
+    <value>Ошибка внедрения</value>
+  </data>
+  <data name="ErrKwUndef" xml:space="preserve">
+    <value>Нельзя удалить определение ключевого слова</value>
+  </data>
+  <data name="ErrNoCommonCmd" xml:space="preserve">
+    <value>В программе нет ни одной команды в общей ветви</value>
+  </data>
+  <data name="ErrNotExist" xml:space="preserve">
+    <value>{0} не существует</value>
+  </data>
+  <data name="ErrProcAmbiguous" xml:space="preserve">
+    <value>Неопределённый процесс: {0}</value>
+  </data>
+  <data name="ErrProcNotFound" xml:space="preserve">
+    <value>Процесс не существует: {0}</value>
+  </data>
+  <data name="ErrRallocFail" xml:space="preserve">
+    <value>Ошибка выделения удалённой памяти 0x{0:X}</value>
+  </data>
+  <data name="ErrRedef" xml:space="preserve">
+    <value>Имя уже определено</value>
+  </data>
+  <data name="ErrRthreadFail" xml:space="preserve">
+    <value>Ошибка удалённого потока 0x{0:X} (результат потока 0x{0:X})</value>
+  </data>
+  <data name="ErrRwriteFail" xml:space="preserve">
+    <value>Ошибка удалённой памяти 0x{0:X}</value>
+  </data>
+  <data name="ErrTopCtx" xml:space="preserve">
+    <value>Нельзя закрыть корневой контекст.</value>
+  </data>
+  <data name="ErrTopCtxDetail" xml:space="preserve">
+    <value>Откройте контекст командой #ctxstart прежде чем закрывать его.</value>
+  </data>
+  <data name="ErrUnexpected" xml:space="preserve">
+    <value>Неожиданное {0}</value>
+  </data>
+  <data name="ErrUnknownCmd" xml:space="preserve">
+    <value>Неизвестное имя или идентификатор.</value>
+  </data>
+  <data name="ErrUnknownPrepro" xml:space="preserve">
+    <value>Неизвестная директива препроцессора.</value>
+  </data>
+  <data name="ErrUnko" xml:space="preserve">
+    <value>Наступили в какашку.</value>
+  </data>
+  <data name="ForceStop" xml:space="preserve">
+    <value>Какашка!</value>
+  </data>
+  <data name="GotHandle" xml:space="preserve">
+    <value>Получен хэндл {0}</value>
+  </data>
+  <data name="IncBin" xml:space="preserve">
+    <value>Чтение {0} команд из двоичного файла {1}</value>
+  </data>
+  <data name="Including" xml:space="preserve">
+    <value>Чтение {0}</value>
+  </data>
+  <data name="InfForLoop" xml:space="preserve">
+    <value>Несходящаяся последовательность для параметра {0}</value>
+  </data>
+  <data name="InfForLoopDetail" xml:space="preserve">
+    <value>Эта последовательность не сходится за конечное число шагов в указанном диапазоне и при указанном шаге.</value>
+  </data>
+  <data name="OutsideError" xml:space="preserve">
+    <value>Эта ошибка произошла снаружи компилятора.</value>
+  </data>
+  <data name="PrintSrcError" xml:space="preserve">
+    <value>Ошибка в коде: 
+    {0}</value>
+  </data>
+  <data name="PrintSrcErrorExpand" xml:space="preserve">
+    <value>    развёрнутом из: 
+        {0}</value>
+  </data>
+  <data name="PrintSrcErrorHelp" xml:space="preserve">
+    <value>Дополнительная справка: 
+{0}</value>
+  </data>
+  <data name="PrintSrcErrorLoc" xml:space="preserve">
+    <value>    файл {0} строка {1}: 
+        {2}</value>
+  </data>
+  <data name="RthreadCreate" xml:space="preserve">
+    <value>Создан удалённый поток {0}</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Сортировка кусков по времени</value>
+  </data>
+  <data name="StsInjected" xml:space="preserve">
+    <value>Отладочный сервер внедрён</value>
+  </data>
+  <data name="StsInjecting" xml:space="preserve">
+    <value>Внедрение отладочного сервера в PID {0} / pHandle {1}...</value>
+  </data>
+  <data name="Subst" xml:space="preserve">
+    <value>Подстановка: {0} в {1}</value>
+  </data>
+  <data name="Verbose" xml:space="preserve">
+    <value>По команде #chatty включены дополнительные логи</value>
+  </data>
+  <data name="WriteBuf" xml:space="preserve">
+    <value>Запись буфера в двоичный файл {0}</value>
+  </data>
+</root>

@@ -1,0 +1,26 @@
+{
+    "name": "divaft-scripting",
+    "displayName": "DIVAFT Scripting",
+    "description": "Highlighting for code for MikuASM",
+    "publisher": "MeeksDevTeam",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.44.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "mikuasm",
+            "aliases": ["MikuASM", "mikuasm"],
+            "extensions": [".mia"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "mikuasm",
+            "scopeName": "source.miku",
+            "path": "./syntaxes/mikuasm.tmLanguage.json"
+        }]
+    }
+}
