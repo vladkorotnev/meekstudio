@@ -15,8 +15,8 @@ namespace ScoreSolver
         public static bool Verbose { get; private set; }
         static void Main(string[] args)
         {
-            Console.WriteLine("MeekScoreSolver v1.0.1 alpha (why is this not in Rust?)");
-            Console.WriteLine("by Akasaka, 2021. Special thanks to Korenkonder.");
+            Console.WriteLine("MeekScoreSolver v1.2.0 alpha (why is this not in Rust?)");
+            Console.WriteLine("by Akasaka, 2021-2022. Special thanks to Korenkonder.");
             Console.WriteLine();
 
             bool isLanWorker = GetArg("--lan-worker");
@@ -71,11 +71,11 @@ namespace ScoreSolver
 
                 RuleSet rs = (GetArg("--no-hold-score") ? new HoldlessFTRuleSet(diff, playTime) : new FutureToneRuleSet(diff, playTime));
                 SimulationSystem s = new SimulationSystem(0, new AllCoolSkill(), rs);
-                Console.Error.Write("[MAIN] Reading DSC...");
+                Console.Error.WriteLine("[MAIN] Reading DSC...");
                 var loader = new DSCToTimelineReader();
                 var testLvl = loader.TimelineOfDsc(fpath);
                 s.SetRefscoreFromTimeline(testLvl);
-                Console.Error.WriteLine("{0} notes, RefScore={1}", testLvl.Events.Where(x => x is NoteHappening).Count(), s.RefScore);
+                Console.Error.WriteLine("[MAIN] {0} notes, RefScore={1}", testLvl.Events.Where(x => x is NoteHappening).Count(), s.RefScore);
 
                 Console.Error.WriteLine("[MAIN] Setting up simulation...");
                 testLvl.WrapInTime();
@@ -263,6 +263,7 @@ namespace ScoreSolver
             Console.WriteLine("--lan-server:              allow solvers from LAN to connect");
             Console.WriteLine("--local-queue-max <int>:   (LAN worker only) max items in local work queue, default 1000000");
             Console.WriteLine("--local-queue-get <int>:   (LAN worker only) fetch batch on local work queue underrun, default 1000");
+            Console.WriteLine("--stay-hydrated:           (LAN worker only) try to keep work queue above --local-queue-get value count");
             Console.WriteLine();
 
             Console.WriteLine("To save output, pipe stdout somewhere, all logs are in stderr anyway");
@@ -295,12 +296,16 @@ namespace ScoreSolver
         static string SolutionTree(DecisionPathNode solution)
         {
             StringBuilder sb = new StringBuilder();
+            var minLife = SystemState.MAX_LIFE;
             var node = solution;
             do
             {
-                sb.Insert(0, String.Format("[Time {0}] [Combo {1}] [Holds {2}] [Score {4}] {3}\n", FmtTime(node.state.Time), node.state.Combo, Util.ButtonsToString(node.state.HeldButtons), (node.state.LastDecisionMeta != null ? node.state.LastDecisionMeta.ToString() : ""), node.state.Score));
+                if (node.state.Life < minLife) minLife = node.state.Life;
+                sb.Insert(0, String.Format("{0}\t\t{1}\t\t[{2}]\t\t{4}\t\t{5}\t\t{3}\n", FmtTime(node.state.Time), node.state.Combo, Util.ButtonsToString(node.state.HeldButtons), (node.state.LastDecisionMeta != null ? node.state.LastDecisionMeta.ToString() : ""), node.state.Score, node.state.Life));
                 node = node.parentNode;
             } while (node != null);
+            sb.Insert(0, "TIME\t\tCOMBO\t\t[HOLD]\t\tSCORE\t\tLIFE\t\tDescription\n");
+            sb.Insert(0, String.Format("MIN LIFE = {0}\n", minLife));
             return sb.ToString();
         }
 

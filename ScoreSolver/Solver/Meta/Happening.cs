@@ -229,10 +229,10 @@ namespace ScoreSolver
             // add button life
             if(!currentState.IsInChanceTime)
             {
-                if(currentState.Life < 255)
+                if(currentState.Life < SystemState.MAX_LIFE)
                 {
                     currentState.Life += system.PlayerSkill.PickScore(system.GameRules.LifeScore.Correct);
-                    if (currentState.Life > 255) currentState.Life = 255;
+                    if (currentState.Life > SystemState.MAX_LIFE) currentState.Life = SystemState.MAX_LIFE;
                 }
                 else
                 {

@@ -69,31 +69,73 @@ namespace ScoreSolver
         public void SetRefscoreFromTimeline(HappeningSet timeline)
         {
             long allCool = timeline.Events.Where(evt => evt is NoteHappening).Select(x => Util.CountButtons(((NoteHappening)x).PressButtons) * GameRules.ButtonScore.Correct.Cool).Sum();
-            // allCool already excludes MULTIs since there is only one NoteHappening for each multi
+            Console.Error.WriteLine("[REFS] AllCool={0}", allCool);
+
+            var hasChanceTime = GameRules.Difficulty == Difficulty.Easy || GameRules.Difficulty == Difficulty.Normal;
+
+            var lifeBonusAppliedNoteCount = hasChanceTime ?
+                ( // EASY or NORMAL
+                    timeline.Events
+                        .TakeWhile(evt => !(evt is ChallengeChangeHappening && ((ChallengeChangeHappening)evt).IsChallenge)) // all notes before challenge begins
+                        .Concat(
+                            timeline.Events
+                                .SkipWhile(evt => !(evt is ChallengeChangeHappening && ((ChallengeChangeHappening)evt).IsChallenge)) // skip until start of challenge
+                                .SkipWhile(evt => !(evt is ChallengeChangeHappening && !((ChallengeChangeHappening)evt).IsChallenge)) // skip until end of challenge
+                        ) // all notes after challenge ends
+                        .Where(x => x is NoteHappening).Count() // <- All notes outside of challenge = all notes providing life
+                        -
+                        ((SystemState.MAX_LIFE - SystemState.DEFAULT_LIFE) / GameRules.LifeScore.Correct.Cool)
+                ) : (
+                    // Others
+                    timeline.Events
+                        .Where(x => x is NoteHappening).Count() // <- All notes outside of challenge = all notes providing life
+                        -
+                        ((SystemState.MAX_LIFE - SystemState.DEFAULT_LIFE) / GameRules.LifeScore.Correct.Cool)
+                );
+
+            Console.Error.WriteLine("[REFS] LifeBonusNoteCount={0}", lifeBonusAppliedNoteCount);
+
+            long lifeBonus = lifeBonusAppliedNoteCount * GameRules.LifeBonus;
+            Console.Error.WriteLine("[REFS] LifeBonus={0}", lifeBonus);
+
+            long comboBonus = timeline.Events
+                .Where(x => x is NoteHappening)
+                .Select((_, index) => (long) GameRules.ComboBonus((uint)index + 1))
+                .Sum();
+            Console.Error.WriteLine("[REFS] ComboBonus={0}", comboBonus);
+
 
             long chanceBonus = 0;
+            int chanceCount = 0;
 
-            int preChanceStartCombo = timeline.Events
-            .TakeWhile(evt => !(evt is ChallengeChangeHappening && ((ChallengeChangeHappening)evt).IsChallenge))
-            .Where(x => x is NoteHappening)
-            .Count();
-            int chanceCount = timeline.Events
-                .SkipWhile(evt => !(evt is ChallengeChangeHappening && ((ChallengeChangeHappening)evt).IsChallenge))
-                .TakeWhile(evt => !(evt is ChallengeChangeHappening && !((ChallengeChangeHappening)evt).IsChallenge))
-                .Where(x => x is NoteHappening).Count();
-            if (chanceCount > 0)
+            if(hasChanceTime)
             {
-                if (preChanceStartCombo < 50)
+                int preChanceStartCombo = timeline.Events
+                    .TakeWhile(evt => !(evt is ChallengeChangeHappening && ((ChallengeChangeHappening)evt).IsChallenge))
+                    .Where(x => x is NoteHappening)
+                    .Count();
+                chanceCount = timeline.Events
+                    .SkipWhile(evt => !(evt is ChallengeChangeHappening && ((ChallengeChangeHappening)evt).IsChallenge))
+                    .TakeWhile(evt => !(evt is ChallengeChangeHappening && !((ChallengeChangeHappening)evt).IsChallenge))
+                    .Where(x => x is NoteHappening).Count();
+                if (chanceCount > 0)
                 {
-                    chanceBonus = chanceCount * 500 - 12250;
-                }
-                else
-                {
-                    chanceBonus = 5 * chanceCount * (chanceCount + 1);
+                    if (preChanceStartCombo < 50)
+                    {
+                        chanceBonus = chanceCount * 500 - 12250;
+                    }
+                    else
+                    {
+                        chanceBonus = 5 * chanceCount * (chanceCount + 1);
+                    }
                 }
             }
 
-            RefScore = allCool + chanceBonus;
+            Console.Error.WriteLine("[REFS] ChanceBonus={0} (ChanceCount={1})", chanceBonus, chanceCount);
+
+            RefScore = allCool + chanceBonus + lifeBonus + comboBonus;
+            Console.Error.WriteLine("[REFS] TOTAL REFS={0}", RefScore);
+
             if (RefScore < 0) RefScore = 0;
         }
     }
@@ -104,6 +146,8 @@ namespace ScoreSolver
     [Serializable]
     class SystemState
     {
+        public const int DEFAULT_LIFE = 127;
+        public const int MAX_LIFE = 255;
         public bool IsFinal = false;
 
         /// <summary>
@@ -147,7 +191,7 @@ namespace ScoreSolver
         /// <summary>
         /// Current life bar
         /// </summary>
-        public int Life = 127;
+        public int Life = DEFAULT_LIFE;
         /// <summary>
         /// Currently achieved attain
         /// </summary>

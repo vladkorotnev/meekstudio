@@ -53,6 +53,8 @@ namespace ScoreSolver
         /// </summary>
         public const int ButtonTotalCount = 4;
 
+        public Difficulty Difficulty;
+
         /// <summary>
         /// Scores given per hitting 1 note/button
         /// </summary>
@@ -168,6 +170,8 @@ namespace ScoreSolver
         public FutureToneRuleSet(Difficulty difficulty, int playthroughTime = 1)
         {
             if (playthroughTime < 1 || playthroughTime > 3) throw new ArgumentOutOfRangeException("playthroughTime", "Playthrough count can be 1, 2 or 3");
+
+            Difficulty = difficulty;
 
             ComboBonusMinCombo = 10;
             ComboBonusMaxCombo = 50;
