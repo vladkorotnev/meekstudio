@@ -50,6 +50,41 @@ namespace ScoreSolver
             PlayerSkill = skill;
         }
 
+        public SystemState PassTime(SystemState currentState, uint newTime)
+        {
+            if(newTime < currentState.Time) throw new ArgumentException("Time machines are forbidden at the arcade");
+
+            SystemState nextState = currentState.Clone();
+
+            // If we are holding something
+            if (nextState.HeldButtons != ButtonState.None)
+            {
+                // Add the hold bonus up to this point
+                double holdDurTotal = Math.Min(newTime - currentState.HoldStartTime, GameRules.MaxTicksInHold);
+                double holdDurSinceLastCalc = Math.Min(newTime - currentState.LastHoldRecalcTime, GameRules.MaxTicksInHold - (currentState.LastHoldRecalcTime - currentState.HoldStartTime));
+
+                int holdDurFrames = (int)Math.Round(holdDurSinceLastCalc / GameRules.TicksPerFrame);
+                long holdBonusPts = holdDurFrames * GameRules.HoldBonusFactor * currentState.HeldButtonCount;
+                nextState.Score += holdBonusPts;
+                nextState.HoldBonus += holdBonusPts;
+
+                // Add max hold bonus and release buttons (because there is no point in holding them more)
+                if (holdDurTotal == GameRules.MaxTicksInHold)
+                {
+                    nextState.HeldButtons = ButtonState.None;
+                    long maxHoldBonusPts = GameRules.MaxHoldBonus * currentState.HeldButtonCount;
+                    nextState.Score += maxHoldBonusPts;
+                    nextState.HoldBonus += maxHoldBonusPts;
+                }
+
+                nextState.LastHoldRecalcTime = newTime;
+            }
+
+            nextState.Time = newTime;
+
+            return nextState;
+        }
+
         public double AttainPoint(SystemState forState)
         {
             double noteAtn; 
@@ -200,7 +235,13 @@ namespace ScoreSolver
         /// Current time
         /// </summary>
         public uint Time = 0;
-        
+
+        /// <summary>
+        /// Route identifier for internal tracking
+        /// </summary>
+        public uint RouteId = 0;
+
+
         /// <summary>
         /// Last time decision hint
         /// </summary>
@@ -239,6 +280,7 @@ namespace ScoreSolver
             copy.Life = Life;
             copy.Attain = Attain;
             copy.Time = Time;
+            copy.RouteId = RouteId;
             return copy;
         }
         

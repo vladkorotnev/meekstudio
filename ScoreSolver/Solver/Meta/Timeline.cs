@@ -28,20 +28,6 @@ namespace ScoreSolver
         }
 
         /// <summary>
-        /// Wrap all of the contained events into a <see cref="HappeningTimePassageWrapper"/> to keep track of time flow
-        /// </summary>
-        public void WrapInTime()
-        {
-            var newLst = new List<Happening>();
-            foreach (var ev in Events)
-            {
-                if (ev is TimePassageHappening) newLst.Add(ev);
-                else newLst.Add(new HappeningTimePassageWrapper(ev));
-            }
-            Events = newLst;
-        }
-
-        /// <summary>
         /// Add checkpoints according to provided game rules
         /// </summary>
         public void InsertCheckpointsFor(RuleSet rules)
@@ -69,7 +55,6 @@ namespace ScoreSolver
             for (int i = 0; i < Events.Count; i++)
             {
                 Happening evt = Events[i];
-                if (evt is HappeningTimePassageWrapper) evt = ((HappeningTimePassageWrapper)evt).Inner;
 
                 // No insertions after end
                 if (evt is EndOfLevelHappening) break;
@@ -127,7 +112,6 @@ namespace ScoreSolver
             for (int i = 0; i < Events.Count; i++)
             {
                 Happening evt = Events[i];
-                if (evt is HappeningTimePassageWrapper) evt = ((HappeningTimePassageWrapper)evt).Inner;
 
                 if (evt is NoteHappening)
                 {

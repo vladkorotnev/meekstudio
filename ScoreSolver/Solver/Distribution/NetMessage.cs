@@ -30,6 +30,11 @@ namespace ScoreSolver
         MSG_GIVE_WORKLOAD = -2,
 
         /// <summary>
+        /// Server notifies about route optimization changes
+        /// </summary>
+        MSG_NFY_ROUTE_DEATH = -98,
+
+        /// <summary>
         /// Client gives a simulation result
         /// </summary>
         MSG_GIVE_RESULT = -99
@@ -151,4 +156,16 @@ namespace ScoreSolver
         }
     }
 
+    [Serializable]
+    class NetRouteDeathMessage : NetMessage
+    {
+        public uint DeadRouteId { get; private set; }
+
+        public NetRouteDeathMessage() : base(NetMessageKind.MSG_NFY_ROUTE_DEATH) { }
+
+        public NetRouteDeathMessage(uint deadRoute) : this()
+        {
+            DeadRouteId = deadRoute;
+        }
+    }
 }

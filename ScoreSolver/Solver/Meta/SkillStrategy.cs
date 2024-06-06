@@ -13,6 +13,11 @@ namespace ScoreSolver
     abstract class Skill
     {
         public abstract int PickScore(HitScore scores);
+
+        /// <summary>
+        /// If set, prohibit generating WORST and WRONG notes
+        /// </summary>
+        public bool ProhibitMisses;
     }
 
     /// <summary>

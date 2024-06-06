@@ -84,7 +84,7 @@ namespace ScoreSolver
                             {
                                 //if (curEvtArrow.HasFlag(ButtonState.Arrow2)) throw new Exception("2 arrows but with segments?!");
                                 //curEvtArrowSeg += 1;
-                                throw new NotImplementedException("Chain slide not yet supported");
+                               // throw new NotImplementedException("Chain slide not yet supported");
                             }
                             else
                             {
@@ -121,9 +121,10 @@ namespace ScoreSolver
                 {
                     var msel = ((Command_MODE_SELECT)cmd);
                     var evt = new ChallengeChangeHappening(curTime, msel.mode == 1);
-                    dst.Events.Add(evt);
+                    Console.Error.WriteLine("[DSC] WARNING: Challenge Time Disabled");
+                   // dst.Events.Add(evt);
                 }
-                else if(cmd is Command_PV_END || cmd is Command_PV_END_FADEOUT || cmd is Command_END)
+                else if(cmd is Command_END)
                 {
                     dst.Events.Add(new EndOfLevelHappening(curTime));
                 }

@@ -36,6 +36,7 @@ namespace ScoreSolver
         private TcpListener serverSocket;
         private bool breakFlag;
         private int clientCount;
+        private List<Socket> clients;
 
         /// <summary>
         /// Starts up the server to listen for incoming connections
@@ -45,6 +46,7 @@ namespace ScoreSolver
             serverSocket = new TcpListener(endpoint);
             breakFlag = false;
             clientCount = 0;
+            clients = new List<Socket>();
             serverSocket.Start();
             new Thread(new ThreadStart(ServerThread)).Start();
         }
@@ -55,6 +57,7 @@ namespace ScoreSolver
         public void StopServer()
         {
             serverSocket.Stop();
+            clients.Clear();
         }
 
         /// <summary>
@@ -65,6 +68,7 @@ namespace ScoreSolver
             while (!breakFlag)
             {
                 Socket client = serverSocket.AcceptSocket();
+                clients.Add(client);
                 Interlocked.Increment(ref clientCount);
 
                 Console.WriteLine("[PROV] Net client: {0}", client.RemoteEndPoint.ToString());
@@ -114,6 +118,7 @@ namespace ScoreSolver
 
          
                         client.Close();
+                        clients.Remove(client);
                     } 
                     catch(Exception e)
                     {
@@ -151,6 +156,30 @@ namespace ScoreSolver
         public void EnqueueWork(DecisionPathNode work)
         {
             Inner.EnqueueWork(work);
+        }
+
+        public bool IsRouteDead(uint routeId)
+        {
+            return Inner.IsRouteDead(routeId);
+        }
+
+        public bool CheckScoreOfCheckpoint(uint checkpointId, long score, uint routeId)
+        {
+            bool isSuperior = Inner.CheckScoreOfCheckpoint(checkpointId, score, routeId);
+
+            if(!isSuperior)
+            {
+                // this route just got killed, notify clients
+                foreach(var client in clients)
+                {
+                    if(client.Connected)
+                    {
+                        client.SendObject(new NetRouteDeathMessage(routeId));
+                    }
+                }
+            }
+
+            return isSuperior;
         }
     }
 }

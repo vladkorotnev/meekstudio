@@ -9,13 +9,13 @@ using System.Text;
 namespace ScoreSolver
 {
    
-
+    // IDEA: collapse straight hit only notes not interfering with holds into a single optimized step, only calculating life bonus for them separately
     class Program
     {
         public static bool Verbose { get; private set; }
         static void Main(string[] args)
         {
-            Console.WriteLine("MeekScoreSolver v1.2.0 alpha (why is this not in Rust?)");
+            Console.WriteLine("MeekScoreSolver v1.3.1 alpha (why is this not in Rust?)");
             Console.WriteLine("by Akasaka, 2021-2022. Special thanks to Korenkonder.");
             Console.WriteLine();
 
@@ -70,7 +70,9 @@ namespace ScoreSolver
                 }
 
                 RuleSet rs = (GetArg("--no-hold-score") ? new HoldlessFTRuleSet(diff, playTime) : new FutureToneRuleSet(diff, playTime));
-                SimulationSystem s = new SimulationSystem(0, new AllCoolSkill(), rs);
+                Skill skill = new AllCoolSkill();
+                skill.ProhibitMisses = GetArg("--no-worst-wrong");
+                SimulationSystem s = new SimulationSystem(0, skill, rs);
                 Console.Error.WriteLine("[MAIN] Reading DSC...");
                 var loader = new DSCToTimelineReader();
                 var testLvl = loader.TimelineOfDsc(fpath);
@@ -78,7 +80,6 @@ namespace ScoreSolver
                 Console.Error.WriteLine("[MAIN] {0} notes, RefScore={1}", testLvl.Events.Where(x => x is NoteHappening).Count(), s.RefScore);
 
                 Console.Error.WriteLine("[MAIN] Setting up simulation...");
-                testLvl.WrapInTime();
                 if (!naiveMode)
                 {
                     if(GetArg("--checkpoints-by-time"))
@@ -250,6 +251,7 @@ namespace ScoreSolver
 
             Console.WriteLine("Optional arguments:");
             Console.WriteLine("--naive:                   use naive non-optimized solver aka bruteforce mode");
+            Console.WriteLine("--no-worst-wrong:          search the perfect route (without misses or wrong notes)");
             Console.WriteLine("--checkpoints-by-time:     place checkpoints by time rather than combo (can affect precision)");
             Console.WriteLine("--play-time <1|2|3>:       time playing in session (affects safety time on easy/norm, default 1)");
             Console.WriteLine("--workers <1~>:            number of worker threads, default = CPU count");
@@ -257,7 +259,7 @@ namespace ScoreSolver
             Console.WriteLine("--gc-interval <0~>:        number of allowed queue allocations between forced GC, 0 disables periodic GC, default 3000000");
             Console.WriteLine("--realtime-gc:             force GC on every found solution, may slow things down but ease up RAM use");
             Console.WriteLine("--no-keep-history:         don't save decision history and instead only find max score");
-            Console.WriteLine("--no-keep-tree:            keep the whole decision tree, uses A LOT of RAM in bruteforce mode");
+            Console.WriteLine("--no-keep-tree:            don't keep the whole decision tree, it uses A LOT of RAM in bruteforce mode");
             Console.WriteLine("--no-hold-score:           holds don't give any score");
             Console.WriteLine("--score-list-dir <dir>:    print score lists to files in dir");
             Console.WriteLine("--lan-server:              allow solvers from LAN to connect");
@@ -298,13 +300,15 @@ namespace ScoreSolver
             StringBuilder sb = new StringBuilder();
             var minLife = SystemState.MAX_LIFE;
             var node = solution;
+            int i = 1;
             do
             {
                 if (node.state.Life < minLife) minLife = node.state.Life;
-                sb.Insert(0, String.Format("{0}\t\t{1}\t\t[{2}]\t\t{4}\t\t{5}\t\t{3}\n", FmtTime(node.state.Time), node.state.Combo, Util.ButtonsToString(node.state.HeldButtons), (node.state.LastDecisionMeta != null ? node.state.LastDecisionMeta.ToString() : ""), node.state.Score, node.state.Life));
+                sb.Insert(0, String.Format("{6}\t{0}\t\t{1}\t\t[{2}]\t\t{4}\t\t{5}\t\t{3}\n", FmtTime(node.state.Time), node.state.Combo, Util.ButtonsToString(node.state.HeldButtons), (node.state.LastDecisionMeta != null ? node.state.LastDecisionMeta.ToString() : ""), node.state.Score, node.state.Life, i));
                 node = node.parentNode;
+                i++;
             } while (node != null);
-            sb.Insert(0, "TIME\t\tCOMBO\t\t[HOLD]\t\tSCORE\t\tLIFE\t\tDescription\n");
+            sb.Insert(0, "#\tTIME\t\tCOMBO\t\t[HOLD]\t\tSCORE\t\tLIFE\t\tDescription\n");
             sb.Insert(0, String.Format("MIN LIFE = {0}\n", minLife));
             return sb.ToString();
         }

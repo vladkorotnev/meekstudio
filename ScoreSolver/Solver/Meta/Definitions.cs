@@ -43,6 +43,18 @@ namespace ScoreSolver
     }
 
     /// <summary>
+    /// Defines the timing windows in milliseconds
+    /// </summary>
+    [Serializable]
+    struct NoteTimingSet
+    {
+        public int Cool;
+        public int Fine;
+        public int Safe;
+        public int Sad;
+    }
+
+    /// <summary>
     /// A description of game rules
     /// </summary>
     [Serializable]
@@ -59,6 +71,8 @@ namespace ScoreSolver
         /// Scores given per hitting 1 note/button
         /// </summary>
         public HitScoreSet ButtonScore;
+
+        public NoteTimingSet NoteTiming;
 
         /// <summary>
         /// Life point given per hitting 1 note/button
@@ -208,6 +222,14 @@ namespace ScoreSolver
                     Sad = 30,
                     Worst = 0
                 }
+            };
+
+            NoteTiming = new NoteTimingSet
+            {
+                Cool = 30,
+                Fine = 70,
+                Safe = 100,
+                Sad = 130
             };
 
             SafetyLevel = 76;

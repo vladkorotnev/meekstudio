@@ -85,8 +85,6 @@ namespace ScoreSolver
                 }
                 else throw new Exception("Did not converge");
             }
-            Interlocked.Decrement(ref CurrentWorkerCount);
-            ThreadLimiter.Release();
         }
     }
 }

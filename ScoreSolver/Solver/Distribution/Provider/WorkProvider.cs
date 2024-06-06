@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ScoreSolver
@@ -45,6 +46,16 @@ namespace ScoreSolver
         /// Whether all other entities connected to the provider are done and it's safe to shut down
         /// </summary>
         bool IsSafeToStop { get; }
+
+        /// <summary>
+        /// Whether the route should not be considered anymore
+        /// </summary>
+        bool IsRouteDead(uint routeId);
+        /// <summary>
+        /// Report the score achieved by the route at a checkpoint
+        /// </summary>
+        /// <returns>Whether the score was bigger than the current maximum for the checkpoint</returns>
+        bool CheckScoreOfCheckpoint(uint checkpointId, long score, uint routeId);
     }
 
     /// <summary>
@@ -81,6 +92,10 @@ namespace ScoreSolver
         }
 
         private ConcurrentQueue<DecisionPathNode> asyncQueue = new ConcurrentQueue<DecisionPathNode>();
+        private Semaphore checkpointSemaphore = new Semaphore(1, 1);
+        private Dictionary<uint, long> checkpointToMaxScore = new Dictionary<uint, long>();
+        private Dictionary<uint, uint> checkpointToBestRouteId = new Dictionary<uint, uint>();
+        private HashSet<uint> deadRouteIds = new HashSet<uint>();
 
         public bool MustKeepHistory { get; set; }
         public bool MustKeepTree { get; set; }
@@ -109,6 +124,48 @@ namespace ScoreSolver
         public void EnqueueWork(DecisionPathNode work)
         {
             asyncQueue.Enqueue(work);
+        }
+
+        public bool IsRouteDead(uint routeId)
+        {
+            return deadRouteIds.Contains(routeId);
+        }
+
+        public bool CheckScoreOfCheckpoint(uint checkpointId, long score, uint routeId)
+        {
+            bool rslt = true;
+
+            checkpointSemaphore.WaitOne();
+            
+            if(!checkpointToMaxScore.ContainsKey(checkpointId))
+            {
+                checkpointToMaxScore.Add(checkpointId, score);
+                checkpointToBestRouteId.Add(checkpointId, routeId);
+                rslt = true;
+            } 
+            else
+            {
+                if(checkpointToMaxScore[checkpointId] >= score)
+                {
+                    // This route is inferior, kill it
+                    deadRouteIds.Add(routeId);
+                    rslt = false;
+                } 
+                else if (checkpointToMaxScore[checkpointId] < score)
+                {
+                    // This route is superior, kill its predecessor
+                    checkpointToMaxScore[checkpointId] = score;
+                    if(checkpointToBestRouteId.ContainsKey(checkpointId))
+                    {
+                        deadRouteIds.Add(checkpointToBestRouteId[checkpointId]);
+                        checkpointToBestRouteId[checkpointId] = routeId;
+                    }
+                    rslt = true;
+                }
+            }
+
+            checkpointSemaphore.Release();
+            return rslt;
         }
 
         public virtual bool IsSafeToStop

@@ -14,14 +14,19 @@ namespace ScoreSolver
     {
         public CheckpointingSolver(WorkProvider prov, WorkReceiver recv) : base(prov, recv) { }
 
-        private Semaphore checkpointSemaphore = new Semaphore(1, 1);
-        private Dictionary<uint, long> checkpointToMaxScore = new Dictionary<uint, long>();
-
         override protected void SolveFromNodeEx(DecisionPathNode startNode)
         {
             var node = startNode;
             while (node != null && !interruptFlag)
             {
+                if (Provider.IsRouteDead(node.state.RouteId))
+                {
+                    if(Program.Verbose)
+                        Console.Error.WriteLine("[SOLVE] abandoning item of route id {0} because it was killed", node.state.RouteId);
+                    node = null;
+                    continue;
+                }
+
                 var nextHappening = Provider.Timeline.NextHappeningFromTime(node.state.Time);
                 if (nextHappening != null)
                 {
@@ -31,31 +36,20 @@ namespace ScoreSolver
                     {
                         var ckp = (OptimizationCheckpointHappening)nextHappening;
                         var chkState = nextStates[0];
-                        checkpointSemaphore.WaitOne();
-                        if(!checkpointToMaxScore.ContainsKey(ckp.CheckpointID))
+                        if(!Provider.CheckScoreOfCheckpoint(ckp.CheckpointID, chkState.Score, chkState.RouteId))
                         {
-                            checkpointToMaxScore.Add(ckp.CheckpointID, chkState.Score);
-                        }
+                            // score less than some other route, discard branch
+                            if (Program.Verbose)
+                                Console.Error.WriteLine("[SOLVE] found worse solution score={0} checkpointID={1}", chkState.Score, ckp.CheckpointID);
+
+                            node = null;
+                            continue;
+                        } 
                         else
                         {
-                            var curMaxScore = checkpointToMaxScore[ckp.CheckpointID];
-                            if(curMaxScore > chkState.Score)
-                            {
-                                // score less than some other route, discard branch
-                                if(Program.Verbose)
-                                    Console.Error.WriteLine("[SOLVE] found worse solution score={0} curMax={1} checkpointID={2}", chkState.Score, curMaxScore, ckp.CheckpointID);
-
-                                node = null;
-                                checkpointSemaphore.Release();
-                                continue;
-                            }
-                            else if (curMaxScore < chkState.Score)
-                            {
-                                checkpointToMaxScore[ckp.CheckpointID] = chkState.Score;
-                            }
+                            node = new DecisionPathNode(Provider.MustKeepHistory ? node : null, chkState, Provider.MustKeepTree);
                         }
-                        node.state = chkState;
-                        checkpointSemaphore.Release();
+                        continue;
                     }
                     else
                     {
@@ -79,7 +73,6 @@ namespace ScoreSolver
                                         Console.Error.WriteLine("[SOLVE] found bad solution atn={0}, minimum={1}, discarded", atn, Provider.System.GameRules.ClearAttain);
                                     Interlocked.Increment(ref BadSolutions);
                                     Interlocked.Increment(ref CheckedSolutions);
-
                                     node = null;
                                 }
                                 if (RealtimeGC)
@@ -111,17 +104,15 @@ namespace ScoreSolver
                                 }
                                 else
                                 {
+                                    // Put the node onto the queue
                                     SolveFromNodeAsync(new DecisionPathNode(Provider.MustKeepHistory ? node : null, nextState, Provider.MustKeepTree));
                                 }
                             }
                         }
                     }
-
                 }
                 else throw new Exception("Did not converge");
             }
-            Interlocked.Decrement(ref CurrentWorkerCount);
-            ThreadLimiter.Release();
         }
     }
 }

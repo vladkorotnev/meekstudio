@@ -237,7 +237,7 @@ namespace ScoreSolver
                         {
                             break;
                         }
-                        if (!gotOne)
+                        if (!gotOne && Program.Verbose)
                         {
                             int wkThreadsAvail = 0;
                             int wkThreadsMax = 0;
@@ -257,7 +257,19 @@ namespace ScoreSolver
                     if (node != null)
                     {
                         Interlocked.Increment(ref CurrentWorkerCount);
-                        ThreadPool.QueueUserWorkItem(x => SolveFromNodeEx(node));
+                        ThreadPool.QueueUserWorkItem(x => {
+                            SolveFromNodeEx(node);
+                            Interlocked.Decrement(ref CurrentWorkerCount);
+                            ThreadLimiter.Release();
+                        });
+                    } 
+                    else
+                    {
+                        // did not get any work yet, put back the limiter and wait for a while
+                        if(Program.Verbose)
+                            Console.Error.WriteLine("[SCHED] Workload underrun!");
+                        ThreadLimiter.Release();
+                        Thread.Sleep(100);
                     }
                 }
             }
@@ -280,7 +292,6 @@ namespace ScoreSolver
             Console.Error.WriteLine("[SCHED] Scheduler Thread Ended");
         }
 
-        private Dictionary<uint, uint> checkpointToMaxScore = new Dictionary<uint, uint>();
 
         /// <summary>
         /// Iterate through viable outcomes of the specified point in the decision tree and save the solutions in <see cref="Receiver"/>

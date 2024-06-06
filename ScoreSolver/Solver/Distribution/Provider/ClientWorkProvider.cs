@@ -155,6 +155,16 @@ namespace ScoreSolver
             semaphore.Release();
         }
 
+        public bool IsRouteDead(uint routeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckScoreOfCheckpoint(uint checkpointId, long score, uint routeId)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsSafeToStop
         {
             get
