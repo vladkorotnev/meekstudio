@@ -81,6 +81,7 @@ namespace ScoreSolver
                             }
                         }
                     }
+                    if (node == null) node = Provider.DequeueWork();
 
                 }
                 else throw new Exception("Did not converge");

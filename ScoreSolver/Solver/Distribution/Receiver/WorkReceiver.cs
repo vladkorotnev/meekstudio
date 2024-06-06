@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ScoreSolver
 {
@@ -33,14 +32,22 @@ namespace ScoreSolver
     {
         public MaxScoreWorkReceiver()
         {
-            Solutions = new List<DecisionPathNode>();
         }
 
         private Semaphore solutionSemaphore = new Semaphore(1, 1);
         private Stopwatch stopwatch;
-        public List<DecisionPathNode> Solutions { get; set; }
+        private long curMaxScore = 0;
+        private DecisionPathNode solution = null;
+        public List<DecisionPathNode> Solutions
+        {
+            get
+            {
+                if (solution == null) return new List<DecisionPathNode>();
+                else return new List<DecisionPathNode>() { solution };
+            }
+        }
 
-        public void ReceiveSolution(DecisionPathNode solution, WorkProvider from)
+        public void ReceiveSolution(DecisionPathNode s, WorkProvider from)
         {
             solutionSemaphore.WaitOne();
             if (stopwatch == null)
@@ -48,19 +55,16 @@ namespace ScoreSolver
                 stopwatch = new Stopwatch();
                 stopwatch.Start();
             }
-            if (Solutions.All(x => x.state.Score < solution.state.Score))
+            if (curMaxScore < s.state.Score)
             {
-                Solutions.Clear();
-            }
-            if (!Solutions.Any(x => x.state.Score > solution.state.Score))
-            {
-                Solutions.Add(solution);
+                solution = s;
+                curMaxScore = solution.state.Score;
                 Console.Error.WriteLine("[+{2}s] Found solution with score={0}, attain={1}", solution.state.Score, (from == null ? "??" : from.System.AttainPoint(solution.state).ToString()), Math.Truncate(stopwatch.Elapsed.TotalSeconds));
             }
             else
             {
-                if(Program.Verbose)
-                    Console.Error.WriteLine("[RECV] Found worse solution with score={0}", solution.state.Score);
+                //if(Program.Verbose)
+                //    Console.Error.WriteLine("[RECV] Found worse solution with score={0}", solution.state.Score);
             }
             solutionSemaphore.Release();
         }

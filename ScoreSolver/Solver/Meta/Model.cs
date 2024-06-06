@@ -305,5 +305,31 @@ namespace ScoreSolver
                 return Life <= 0;
             }
         }
+
+        public void AccreditLife(int add, RuleSet rules)
+        {
+            if (IsInChanceTime) return;
+
+            if(add > 0)
+            {
+                if(Life < MAX_LIFE)
+                {
+                    Life += add;
+                    if (Life > MAX_LIFE) Life = MAX_LIFE;
+                } 
+                else
+                {
+                    Score += rules.LifeBonus;
+                }
+            } 
+            else if (add < 0)
+            {
+                Life += add;
+                if(Life < rules.SafetyLevel && Time < rules.SafetyDuration)
+                {
+                    Life = rules.SafetyLevel;
+                }
+            }
+        }
     }
 }

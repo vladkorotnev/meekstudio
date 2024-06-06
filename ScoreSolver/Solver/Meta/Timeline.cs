@@ -18,13 +18,40 @@ namespace ScoreSolver
         /// List of events in the playthrough
         /// </summary>
         public List<Happening> Events { get; private set; }
+        private List<uint> EventTimes = null;
 
         /// <summary>
         /// Get the next event after the specified time or null
         /// </summary>
         public Happening NextHappeningFromTime(uint time)
         {
-            return Events.SkipWhile(evt => evt.Time <= time).First();
+            if (time == 0) return Events[0];
+            time += 1;
+
+            if(EventTimes == null)
+            {
+                EventTimes = new List<uint>(Events.Select(x => x.Time));
+            }
+
+            int idx = EventTimes.BinarySearch(time);
+            if(idx >= 0)
+            {
+                // exact match
+                return Events[idx];
+            } 
+            else
+            {
+                /*
+                 * If the Array does not contain the specified value, the method returns a negative integer.
+                 * You can apply the bitwise complement operator to the negative result to produce an index. 
+                 * If this index is one greater than the upper bound of the array, 
+                 * there are no elements larger than value in the array. 
+                 * Otherwise, it is the index of the first element that is larger than value.
+                 * */
+                idx = ~idx;
+                if (idx >= Events.Count) return null;
+                return Events[idx];
+            }
         }
 
         /// <summary>
@@ -47,7 +74,7 @@ namespace ScoreSolver
              * 
              * The actual score comparison and branch discard logic is located inside <see cref="CheckpointingSolver"/> class.
              **/
-            uint lastHoldStartTime = 0;
+                uint lastHoldStartTime = 0;
             uint checkpointIdCounter = 0;
             uint skipCounter = 0;
             bool needCheckpoint = false;

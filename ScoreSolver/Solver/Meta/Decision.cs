@@ -120,6 +120,7 @@ namespace ScoreSolver
 
         public override string ToString()
         {
+            if (NewButtons == ButtonState.None) return "";
             return Util.ButtonsToString(OldButtons) + " -> " + Util.ButtonsToString(NewButtons);
         }
     }

@@ -180,7 +180,12 @@ namespace ScoreSolver
             else
             {
                 Console.Error.WriteLine("[MAIN] Using strategy: checkpointing");
-                solver = new CheckpointingSolver(prov, recv);
+                var cks = new CheckpointingSolver(prov, recv);
+                cks.WidthFirstSearch = !GetArg("--depth-first");
+                if(!cks.WidthFirstSearch)
+                    Console.Error.WriteLine("[MAIN] Using mode: depth-first");
+
+                solver = cks;
             }
 
             if (GetArg("--workers"))
@@ -251,6 +256,7 @@ namespace ScoreSolver
 
             Console.WriteLine("Optional arguments:");
             Console.WriteLine("--naive:                   use naive non-optimized solver aka bruteforce mode");
+            Console.WriteLine("--depth-first:             use depth-first search in optimized solver");
             Console.WriteLine("--no-worst-wrong:          search the perfect route (without misses or wrong notes)");
             Console.WriteLine("--checkpoints-by-time:     place checkpoints by time rather than combo (can affect precision)");
             Console.WriteLine("--play-time <1|2|3>:       time playing in session (affects safety time on easy/norm, default 1)");

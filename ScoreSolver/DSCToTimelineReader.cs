@@ -131,7 +131,8 @@ namespace ScoreSolver
                 else if(cmd is Command_TARGET)
                 {
                     var tgt = ((Command_TARGET)cmd);
-                    lastTimeTargets.Add(tgt);
+                    if(tgt.Type != (uint) TargetID.SlideBitL && tgt.Type != (uint) TargetID.SlideBitR)
+                       lastTimeTargets.Add(tgt);
                 }
             }
 

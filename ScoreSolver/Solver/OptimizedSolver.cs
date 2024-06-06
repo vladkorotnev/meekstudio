@@ -14,6 +14,8 @@ namespace ScoreSolver
     {
         public CheckpointingSolver(WorkProvider prov, WorkReceiver recv) : base(prov, recv) { }
 
+        public bool WidthFirstSearch { get; set; }
+
         override protected void SolveFromNodeEx(DecisionPathNode startNode)
         {
             var node = startNode;
@@ -97,7 +99,7 @@ namespace ScoreSolver
                             }
                             else
                             {
-                                if (i == nextStates.Count - 1)
+                                if (i == nextStates.Count - 1 && !WidthFirstSearch)
                                 {
                                     // reusing the same thread is good for the environment
                                     node = new DecisionPathNode(Provider.MustKeepHistory ? node : null, nextState, Provider.MustKeepTree);
@@ -108,6 +110,10 @@ namespace ScoreSolver
                                     SolveFromNodeAsync(new DecisionPathNode(Provider.MustKeepHistory ? node : null, nextState, Provider.MustKeepTree));
                                 }
                             }
+                        }
+                        if(WidthFirstSearch)
+                        {
+                            node = Provider.DequeueWork();
                         }
                     }
                 }

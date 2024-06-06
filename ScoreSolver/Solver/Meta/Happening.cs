@@ -119,16 +119,16 @@ namespace ScoreSolver
 
             // POC: late cool if holding
             // TODO: proper logic across all other types, i.e. lookback and lookahead
-           /*  if(currentState.HeldButtons != ButtonState.None)
+             if(currentState.HeldButtons != ButtonState.None)
              {
                  variants.AddRange(FindOutcomesAtTimeOffset(currentState, system, system.GameRules.NoteTiming.Cool - 1));
              }
              else
              {
                  variants.AddRange(FindOutcomesAtTimeOffset(currentState, system, -(system.GameRules.NoteTiming.Cool - 1)));
-             } */
+             } //*/
 
-            variants.AddRange(FindOutcomesAtTimeOffset(currentState, system, 0));
+            //variants.AddRange(FindOutcomesAtTimeOffset(currentState, system, 0));
 
             // Increment route IDs to allow to kill off bad routes when checkpoints are hit
             for (int i = 0; i < variants.Count; i++)
@@ -214,18 +214,7 @@ namespace ScoreSolver
             // add button score
             currentState.Score += system.PlayerSkill.PickScore(system.GameRules.ButtonScore.Correct) * Util.CountButtons(PressButtons);
             // add button life
-            if(!currentState.IsInChanceTime)
-            {
-                if(currentState.Life < SystemState.MAX_LIFE)
-                {
-                    currentState.Life += system.PlayerSkill.PickScore(system.GameRules.LifeScore.Correct);
-                    if (currentState.Life > SystemState.MAX_LIFE) currentState.Life = SystemState.MAX_LIFE;
-                }
-                else
-                {
-                    currentState.Score += system.GameRules.LifeBonus;
-                }
-            }
+            currentState.AccreditLife(system.PlayerSkill.PickScore(system.GameRules.LifeScore.Correct), system.GameRules);
 
             // increase combo
             currentState.Combo += 1;
@@ -256,6 +245,18 @@ namespace ScoreSolver
                 if(nextState.HeldButtons != ButtonState.None)
                 {
                     nextState.LastDecisionMeta = new SwitchDecisionMeta(nextState.HeldButtons, HoldButtons);
+                    if((nextState.HeldButtons & HoldButtons) != ButtonState.None)
+                    {
+                        // there will be a repress in this switchover
+                        // account for point loss in the re-press
+                        nextState.Time += system.PlayerSkill.FrameLossOnRepress;
+                    } 
+                    else
+                    {
+                        // just a switchover
+                        // account for point loss in the switchover
+                        nextState.Time += system.PlayerSkill.FrameLossOnSwitch;
+                    }
                 }
                 nextState.HeldButtons = HoldButtons;
             }
@@ -264,7 +265,7 @@ namespace ScoreSolver
                 // add new hold button to old ones
                 if(nextState.HeldButtons != ButtonState.None && HoldButtons != ButtonState.None)
                 {
-                    nextState.LastDecisionMeta = new HoldDecisionMeta(HoldButtons);
+                   // nextState.LastDecisionMeta = new HoldDecisionMeta(HoldButtons);
                 }
                 nextState.HeldButtons |= HoldButtons;
             }
@@ -291,14 +292,7 @@ namespace ScoreSolver
             // add button score
             currentState.Score += system.GameRules.ButtonScore.Correct.Worst * Util.CountButtons(PressButtons);
             // add button life
-            if(!currentState.IsInChanceTime)
-            {
-                currentState.Life += system.GameRules.LifeScore.Correct.Worst;
-                if (currentState.Life < system.GameRules.SafetyLevel && Time < system.GameRules.SafetyDuration)
-                {
-                    currentState.Life = system.GameRules.SafetyLevel;
-                }
-            }
+            currentState.AccreditLife(system.GameRules.LifeScore.Correct.Worst, system.GameRules);
 
             // remove combo
             currentState.Combo = 0;
@@ -371,7 +365,10 @@ namespace ScoreSolver
         {
             SystemState newState = base.NewStateForJustHitting(currentState, system);
             long slideBonus = Math.Min(system.GameRules.SlideSegmentMaxCount, SegmentCount+1) * system.GameRules.SlideSegmentBonus; // Segment bonus
-            slideBonus += system.GameRules.MaxChainBonus; // Assuming max chain
+            if(SegmentCount > 0)
+            {
+                slideBonus += system.GameRules.MaxChainBonus; // Assuming max chain
+            }
 
             currentState.SlideBonus += slideBonus;
             currentState.Score += slideBonus;
