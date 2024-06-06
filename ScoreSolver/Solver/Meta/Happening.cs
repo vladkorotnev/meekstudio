@@ -238,25 +238,29 @@ namespace ScoreSolver
         {
             var nextState = NewStateForJustHitting(currentState, system);
 
+            if (nextState.HeldButtons != ButtonState.None)
+            {
+                if ((nextState.HeldButtons & PressButtons) != ButtonState.None)
+                {
+                    // there will be a repress in this switchover
+                    // account for point loss in the re-press
+                    nextState.Time += system.PlayerSkill.FrameLossOnRepress;
+                }
+                else
+                {
+                    // just a switchover
+                    // account for point loss in the switchover
+                    nextState.Time += system.PlayerSkill.FrameLossOnSwitch;
+                }
+            }
+
             // start holding if anything to hold is present
-            if(resetHold)
+            if (resetHold)
             {
                 // remove old hold, add new hold, keep record of "switch over" if needed
                 if(nextState.HeldButtons != ButtonState.None)
                 {
                     nextState.LastDecisionMeta = new SwitchDecisionMeta(nextState.HeldButtons, HoldButtons);
-                    if((nextState.HeldButtons & HoldButtons) != ButtonState.None)
-                    {
-                        // there will be a repress in this switchover
-                        // account for point loss in the re-press
-                        nextState.Time += system.PlayerSkill.FrameLossOnRepress;
-                    } 
-                    else
-                    {
-                        // just a switchover
-                        // account for point loss in the switchover
-                        nextState.Time += system.PlayerSkill.FrameLossOnSwitch;
-                    }
                 }
                 nextState.HeldButtons = HoldButtons;
             }
