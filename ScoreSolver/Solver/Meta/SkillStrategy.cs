@@ -17,12 +17,15 @@ namespace ScoreSolver
         /// </summary>
         private const int ONE_FRAME = 17;
 
-        public abstract int PickScore(HitScore scores);
-
         /// <summary>
         /// If set, prohibit generating WORST and WRONG notes
         /// </summary>
         public bool ProhibitMisses;
+
+        /// <summary>
+        /// Check miss/wrong branches for HOLD events
+        /// </summary>
+        public bool AllowMissHold;
 
         /// <summary>
         /// How many ms it takes for the player to switch between hold combinations
@@ -39,15 +42,8 @@ namespace ScoreSolver
         public uint FrameLossOnRepress = 2 * ONE_FRAME;
     }
 
-    /// <summary>
-    /// A player skill where only COOL is being hit
-    /// </summary>
     [Serializable]
-    class AllCoolSkill : Skill
+    class GeneralSkill : Skill
     {
-        public override int PickScore(HitScore scores)
-        {
-            return scores.Cool;
-        }
     }
 }

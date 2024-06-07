@@ -35,6 +35,16 @@ namespace ScoreSolver
         /// </summary>
         public DecisionPathNode parentNode;
 
+        public void Update(SystemState sysState)
+        {
+            state = sysState;
+            if (sysState.LastDecisionMeta != null)
+            {
+                decisionHistory.Add(sysState.LastDecisionMeta);
+                sysState.LastDecisionMeta = null;
+            }
+        }
+
         public DecisionPathNode(DecisionPathNode parent, SystemState sysState, bool keepParent)
         {
             state = sysState;
@@ -50,7 +60,7 @@ namespace ScoreSolver
                     if(!keepParent)
                         sysState.LastDecisionMeta = null;
                 }
-                if(keepParent)
+                if(keepParent && parent != this)
                 {
                     parentNode = parent;
                 }
@@ -142,7 +152,7 @@ namespace ScoreSolver
             ThreadPool.SetMinThreads(1, 0);
             ThreadPool.SetMaxThreads(ParallelWorkerCount, 0);
 
-            GC.AddMemoryPressure(1024 * 1024);
+            //GC.AddMemoryPressure(1024 * 1024);
 
             Stopwatch sw = new Stopwatch();
 
@@ -201,7 +211,7 @@ namespace ScoreSolver
         protected void SolveFromNodeAsync(DecisionPathNode node)
         {
             Provider.EnqueueWork(node);
-            if (PeriodicGC) { 
+            if (false) { 
                 int nowGcInt = Interlocked.CompareExchange(ref CurrentGCCount, 0, 0);
                 if (nowGcInt >= GCInterval)
                 {
@@ -232,12 +242,12 @@ namespace ScoreSolver
                     bool gotOne = false;
                     while (!gotOne && !interruptFlag)
                     {
-                        gotOne = ThreadLimiter.WaitOne(3000);
+                        gotOne = ThreadLimiter.WaitOne(300);
                         if(interruptFlag)
                         {
                             break;
                         }
-                        if (!gotOne && Program.Verbose)
+                       /* if (!gotOne && Program.Verbose)
                         {
                             int wkThreadsAvail = 0;
                             int wkThreadsMax = 0;
@@ -245,7 +255,7 @@ namespace ScoreSolver
                             ThreadPool.GetMaxThreads(out wkThreadsMax, out dummy);
                             ThreadPool.GetAvailableThreads(out wkThreadsAvail, out dummy);
                             Console.Error.WriteLine("[SCHED] throttling WorkerCount={0} InUseThreadCount={1} (max={2})", CurrentWorkerCount, wkThreadsMax - wkThreadsAvail, wkThreadsMax);
-                        }
+                        }*/
                     }
                     if(interruptFlag)
                     {

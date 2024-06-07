@@ -40,7 +40,9 @@ namespace ScoreSolver
 
         public override List<SystemState> GetPotentialOutcomes(SystemState currentState, SimulationSystem system)
         {
-            return new List<SystemState>() { system.PassTime(currentState, Time) };
+            return new List<SystemState>() {
+                system.PassTime(currentState, Time)
+            };
         }
     }
 
@@ -70,7 +72,7 @@ namespace ScoreSolver
 
         public override List<SystemState> GetPotentialOutcomes(SystemState currentState, SimulationSystem system)
         {
-            var lst = new List<SystemState> { currentState.Clone() };
+            var lst = new List<SystemState> { currentState };
             if(system.GameRules.AllowChanceTime)
             {
                 // Update chance values
@@ -115,20 +117,20 @@ namespace ScoreSolver
 
         public override List<SystemState> GetPotentialOutcomes(SystemState currentState, SimulationSystem system)
         {
-            var variants = new List<SystemState>();
+            var variants = new List<SystemState>(3);
 
             // POC: late cool if holding
             // TODO: proper logic across all other types, i.e. lookback and lookahead
-             if(currentState.HeldButtons != ButtonState.None)
+            /* if(currentState.HeldButtons != ButtonState.None)
              {
-                 variants.AddRange(FindOutcomesAtTimeOffset(currentState, system, system.GameRules.NoteTiming.Cool - 1));
+                FindOutcomesAtTimeOffset(ref variants, currentState, system, system.GameRules.NoteTiming.Cool - 1);
              }
              else
              {
-                 variants.AddRange(FindOutcomesAtTimeOffset(currentState, system, -(system.GameRules.NoteTiming.Cool - 1)));
+                FindOutcomesAtTimeOffset(ref variants, currentState, system, -(system.GameRules.NoteTiming.Cool - 1));
              } //*/
 
-            //variants.AddRange(FindOutcomesAtTimeOffset(currentState, system, 0));
+            FindOutcomesAtTimeOffset(ref variants, currentState, system, 0);
 
             // Increment route IDs to allow to kill off bad routes when checkpoints are hit
             for (int i = 0; i < variants.Count; i++)
@@ -138,17 +140,18 @@ namespace ScoreSolver
                 if(variants[i].Time < Time)
                 {
                     // align early variants to current time to avoid the solver running into this event again
-                    variants[i] = system.PassTime(variants[i], Time);
+                    var variant = variants[i];
+                    system.PassTime(variant, Time);
                 }
             }
 
             return variants;
         }
 
-        protected List<SystemState> FindOutcomesAtTimeOffset(SystemState initialState, SimulationSystem system, int timeOffset)
+        protected List<SystemState> FindOutcomesAtTimeOffset(ref List<SystemState> variants, SystemState s, SimulationSystem system, int timeOffset)
         {
-            var variants = new List<SystemState>();
-            var currentState = system.PassTime(initialState, (uint) (Time + timeOffset));
+            var currentState = s;
+            currentState = system.PassTime(currentState, (uint) (Time + timeOffset));
 
             if (currentState.HeldButtons == ButtonState.None)
             {
@@ -163,42 +166,53 @@ namespace ScoreSolver
                 {
                     // Option 1. No interference between currently held button and incoming, and no hold needed
 
-                    // Option 1.1. just hit it as is, optionally holding
-                    variants.Add(NewStateForHitAndHold(currentState, system, false));
-
                     if (HoldButtons != ButtonState.None)
                     {
+                        // Option 1.1. just hit it as is, optionally holding
+                        var spareState = currentState.Clone();
+                        variants.Add(NewStateForHitAndHold(currentState, system, false));
                         // Option 1.2. if it has hold, switch to new hold
-                        variants.Add(NewStateForHitAndHold(currentState, system, true));
+                        variants.Add(NewStateForHitAndHold(spareState, system, true));
+                    } 
+                    else
+                    {
+                        // Option 1.1. just hit it as is, optionally holding
+                        variants.Add(NewStateForHitAndHold(currentState, system, false));
                     }
                 }
                 else if ((currentState.HeldButtons & PressButtons) != ButtonState.None)
                 {
                     // Option 2. There IS interference between buttons to press and currently held
 
-                    // Option 2.1. release old ones and press new ones
-                    variants.Add(NewStateForHitAndHold(currentState, system, true));
 
-                    if (!system.PlayerSkill.ProhibitMisses)
+                    if (
+                        !system.PlayerSkill.ProhibitMisses &&
+                        (HoldButtons == ButtonState.None || system.PlayerSkill.AllowMissHold) // <- never yet seen a chart where need to miss a hold
+                        )
                     {
+                        // Option 2.1. release old ones and press new ones
+                        var spareState = currentState.Clone();
+                        variants.Add(NewStateForHitAndHold(currentState, system, true));
+
                         // if we have enough empty buttons to press...
-                        if (RuleSet.ButtonTotalCount - Util.CountButtons(currentState.HeldButtons) >= Util.CountButtons(PressButtons))
+                        if (RuleSet.ButtonTotalCount - spareState.HeldButtonCount >= Util.CountButtons(PressButtons))
                         {
                             // Option 2.3. hit wrong buttons
-                            variants.Add(NewStateForWrong(currentState, system));
+                            variants.Add(NewStateForWrong(spareState, system));
                         }
                         else
                         {
                             // option 2.2 moved, only when not enough buttons -- completely miss
                             // because Wrong is better in both Lifebar and Score than Worst
-                            variants.Add(NewStateForMiss(currentState, system));
+                            variants.Add(NewStateForMiss(spareState, system));
                         }
+                    } 
+                    else
+                    {
+                        // Option 2.1. release old ones and press new ones
+                        variants.Add(NewStateForHitAndHold(currentState, system, true));
                     }
 
-                }
-                else
-                {
-                    throw new Exception("Uh oh! Someone forgot something when designing this engine.");
                 }
             }
             return variants;
@@ -207,14 +221,14 @@ namespace ScoreSolver
         /// <summary>
         /// Singular hit state transition for all incoming notes
         /// </summary>
-        protected SystemState NewStateForJustHitting(SystemState currentState_, SimulationSystem system)
+        protected SystemState NewStateForJustHitting(SystemState currentState, SimulationSystem system)
         {
-            var currentState = currentState_.Clone();
+            var decision = system.DecideNoteTimingByOffset((int)currentState.Time - (int)Time);
 
             // add button score
-            currentState.Score += system.PlayerSkill.PickScore(system.GameRules.ButtonScore.Correct) * Util.CountButtons(PressButtons);
+            currentState.Score += system.GameRules.ButtonScore.Correct.For(decision.Kind) * Util.CountButtons(PressButtons);
             // add button life
-            currentState.AccreditLife(system.PlayerSkill.PickScore(system.GameRules.LifeScore.Correct), system.GameRules);
+            currentState.AccreditLife(system.GameRules.LifeScore.Correct.For(decision.Kind), system.GameRules);
 
             // increase combo
             currentState.Combo += 1;
@@ -225,6 +239,11 @@ namespace ScoreSolver
             if (currentState.IsInChanceTime)
             {
                 currentState.Score += Math.Min(system.GameRules.MaxChanceCombo, currentState.Combo) * system.GameRules.ChanceComboFactor;
+            }
+
+            if(decision.Offset != 0)
+            {
+                currentState.LastDecisionMeta = decision;
             }
 
             return currentState;
@@ -287,11 +306,9 @@ namespace ScoreSolver
         /// <summary>
         /// State transition for missing all notes of this event completely
         /// </summary>
-        private SystemState NewStateForMiss(SystemState currentState_, SimulationSystem system)
+        private SystemState NewStateForMiss(SystemState currentState, SimulationSystem system)
         {
-            var currentState = currentState_.Clone();
             currentState.LastDecisionMeta = new MissDecisionMeta(PressButtons);
-
 
             // add button score
             currentState.Score += system.GameRules.ButtonScore.Correct.Worst * Util.CountButtons(PressButtons);
@@ -307,18 +324,16 @@ namespace ScoreSolver
         /// <summary>
         /// State transition for pressing a wrong button of this event
         /// </summary>
-        private SystemState NewStateForWrong(SystemState currentState_, SimulationSystem system)
+        private SystemState NewStateForWrong(SystemState currentState, SimulationSystem system)
         {
-            var currentState = currentState_.Clone();
             currentState.LastDecisionMeta = new WrongDecisionMeta(PressButtons);
 
-
             // add button score
-            currentState.Score += system.PlayerSkill.PickScore(system.GameRules.ButtonScore.Wrong) * Util.CountButtons(PressButtons);
+            currentState.Score += system.GameRules.ButtonScore.Wrong.Cool * Util.CountButtons(PressButtons);
             if(!currentState.IsInChanceTime)
             {
                 // add button life
-                currentState.Life += system.PlayerSkill.PickScore(system.GameRules.LifeScore.Wrong);
+                currentState.Life += system.GameRules.LifeScore.Wrong.Cool;
                 if (currentState.Life < system.GameRules.SafetyLevel && Time < system.GameRules.SafetyDuration)
                 {
                     currentState.Life = system.GameRules.SafetyLevel;
@@ -344,7 +359,6 @@ namespace ScoreSolver
         {
             var st = system.PassTime(currentState, Time);
             st.IsFinal = true;
-            st.Time = Time;
             return new List<SystemState>() { st };
         }
     }

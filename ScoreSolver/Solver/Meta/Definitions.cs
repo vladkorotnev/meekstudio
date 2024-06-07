@@ -30,6 +30,32 @@ namespace ScoreSolver
         public int Safe;
         public int Sad;
         public int Worst;
+
+        public int For(HitKind kind)
+        {
+            switch(kind)
+            {
+                case HitKind.Cool: return Cool;
+                case HitKind.Fine: return Fine;
+                case HitKind.Safe: return Safe;
+                case HitKind.Sad: return Sad;
+                case HitKind.Wrong:
+                case HitKind.Worst:
+                default:
+                    return Worst;
+            }
+        }
+    }
+
+    [Serializable]
+    enum HitKind
+    {
+        Cool,
+        Fine,
+        Safe,
+        Sad,
+        Wrong,
+        Worst
     }
 
     /// <summary>

@@ -16,7 +16,7 @@ namespace ScoreSolver
         static void Main(string[] args)
         {
             Console.WriteLine("MeekScoreSolver v1.3.1 alpha (why is this not in Rust?)");
-            Console.WriteLine("by Akasaka, 2021-2022. Special thanks to Korenkonder.");
+            Console.WriteLine("by Akasaka, 2021-2022-2024. Special thanks to Korenkonder.");
             Console.WriteLine();
 
             bool isLanWorker = GetArg("--lan-worker");
@@ -70,7 +70,7 @@ namespace ScoreSolver
                 }
 
                 RuleSet rs = (GetArg("--no-hold-score") ? new HoldlessFTRuleSet(diff, playTime) : new FutureToneRuleSet(diff, playTime));
-                Skill skill = new AllCoolSkill();
+                Skill skill = new GeneralSkill();
                 skill.ProhibitMisses = GetArg("--no-worst-wrong");
                 SimulationSystem s = new SimulationSystem(0, skill, rs);
                 Console.Error.WriteLine("[MAIN] Reading DSC...");

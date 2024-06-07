@@ -73,7 +73,14 @@ namespace ScoreSolver
                             if (i == nextStates.Count - 1)
                             {
                                 // reusing the same thread is good for the environment
-                                node = new DecisionPathNode(Provider.MustKeepHistory ? node : null, nextState, Provider.MustKeepTree);
+                                if (Provider.MustKeepTree)
+                                {
+                                    node = new DecisionPathNode(Provider.MustKeepHistory ? node : null, nextState, Provider.MustKeepTree);
+                                }
+                                else
+                                {
+                                    node.Update(nextState);
+                                }
                             }
                             else
                             {

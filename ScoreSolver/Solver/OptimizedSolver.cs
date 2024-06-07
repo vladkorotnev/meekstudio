@@ -102,9 +102,17 @@ namespace ScoreSolver
                                 if (i == nextStates.Count - 1 && !WidthFirstSearch)
                                 {
                                     // reusing the same thread is good for the environment
-                                    node = new DecisionPathNode(Provider.MustKeepHistory ? node : null, nextState, Provider.MustKeepTree);
+                                    
+                                    if(Provider.MustKeepTree)
+                                    {
+                                        node = new DecisionPathNode(Provider.MustKeepHistory ? node : null, nextState, Provider.MustKeepTree);
+                                    }
+                                    else
+                                    {
+                                        node.Update(nextState);
+                                    }
                                 }
-                                else
+                                else 
                                 {
                                     // Put the node onto the queue
                                     SolveFromNodeAsync(new DecisionPathNode(Provider.MustKeepHistory ? node : null, nextState, Provider.MustKeepTree));

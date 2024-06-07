@@ -50,29 +50,28 @@ namespace ScoreSolver
             PlayerSkill = skill;
         }
 
-        public SystemState PassTime(SystemState currentState, uint newTime)
+        public SystemState PassTime(SystemState nextState, uint newTime)
         {
-            if(newTime < currentState.Time) throw new ArgumentException("Time machines are forbidden at the arcade");
-
-            SystemState nextState = currentState.Clone();
+            if(newTime < nextState.Time) throw new ArgumentException("Time machines are forbidden at the arcade");
 
             // If we are holding something
             if (nextState.HeldButtons != ButtonState.None)
             {
                 // Add the hold bonus up to this point
-                double holdDurTotal = Math.Min(newTime - currentState.HoldStartTime, GameRules.MaxTicksInHold);
-                double holdDurSinceLastCalc = Math.Min(newTime - currentState.LastHoldRecalcTime, GameRules.MaxTicksInHold - (currentState.LastHoldRecalcTime - currentState.HoldStartTime));
+                double holdDurTotal = Math.Min(newTime - nextState.HoldStartTime, GameRules.MaxTicksInHold);
+                double holdDurSinceLastCalc = Math.Min(newTime - nextState.LastHoldRecalcTime, GameRules.MaxTicksInHold - (nextState.LastHoldRecalcTime - nextState.HoldStartTime));
 
                 int holdDurFrames = (int)Math.Round(holdDurSinceLastCalc / GameRules.TicksPerFrame);
-                long holdBonusPts = holdDurFrames * GameRules.HoldBonusFactor * currentState.HeldButtonCount;
+                long holdBonusPts = holdDurFrames * GameRules.HoldBonusFactor * nextState.HeldButtonCount;
                 nextState.Score += holdBonusPts;
                 nextState.HoldBonus += holdBonusPts;
 
                 // Add max hold bonus and release buttons (because there is no point in holding them more)
                 if (holdDurTotal == GameRules.MaxTicksInHold)
                 {
+                    long maxHoldBonusPts = GameRules.MaxHoldBonus * nextState.HeldButtonCount;
                     nextState.HeldButtons = ButtonState.None;
-                    long maxHoldBonusPts = GameRules.MaxHoldBonus * currentState.HeldButtonCount;
+                    
                     nextState.Score += maxHoldBonusPts;
                     nextState.HoldBonus += maxHoldBonusPts;
                 }
@@ -172,6 +171,31 @@ namespace ScoreSolver
             Console.Error.WriteLine("[REFS] TOTAL REFS={0}", RefScore);
 
             if (RefScore < 0) RefScore = 0;
+        }
+
+        public TimeOffsetDecisionMeta DecideNoteTimingByOffset(int timeOffset)
+        {
+            int window = Math.Abs(timeOffset);
+            HitKind kind = HitKind.Worst;
+
+            if (window <= GameRules.NoteTiming.Cool)
+            {
+                kind = HitKind.Cool;
+            }
+            else if (window <= GameRules.NoteTiming.Fine)
+            {
+                kind = HitKind.Fine;
+            }
+            else if (window <= GameRules.NoteTiming.Safe)
+            {
+                kind = HitKind.Safe;
+            }
+            else if (window <= GameRules.NoteTiming.Sad)
+            {
+                kind = HitKind.Sad;
+            }
+
+            return new TimeOffsetDecisionMeta(kind, timeOffset);
         }
     }
 

@@ -124,4 +124,24 @@ namespace ScoreSolver
             return Util.ButtonsToString(OldButtons) + " -> " + Util.ButtonsToString(NewButtons);
         }
     }
+
+    [Serializable]
+    class TimeOffsetDecisionMeta: DecisionMeta
+    {
+        public int Offset { get; set; }
+        public HitKind Kind { get; set; }
+
+        public TimeOffsetDecisionMeta(HitKind kind, int offset)
+        {
+            Offset = offset;
+            Kind = kind;
+        }
+
+        public override string ToString()
+        {
+            if (Offset == 0) return "";
+
+            return (Offset < 0 ? "Early " : "Late ") + Kind.ToString();
+        }
+    }
 }
