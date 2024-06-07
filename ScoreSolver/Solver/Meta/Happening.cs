@@ -77,7 +77,7 @@ namespace ScoreSolver
             {
                 // Update chance values
                 lst[0].IsInChanceTime = IsChallenge;
-                lst[0].LastDecisionMeta = new FreeTextDecisionMeta("CHANCE TIME " + (IsChallenge ? "START" : "END"));
+                lst[0].RecordDecision(new FreeTextDecisionMeta("CHANCE TIME " + (IsChallenge ? "START" : "END")));
             }
             return lst;
         }
@@ -121,7 +121,7 @@ namespace ScoreSolver
 
             // POC: late cool if holding
             // TODO: proper logic across all other types, i.e. lookback and lookahead
-            /* if(currentState.HeldButtons != ButtonState.None)
+             if(currentState.HeldButtons != ButtonState.None)
              {
                 FindOutcomesAtTimeOffset(ref variants, currentState, system, system.GameRules.NoteTiming.Cool - 1);
              }
@@ -130,7 +130,7 @@ namespace ScoreSolver
                 FindOutcomesAtTimeOffset(ref variants, currentState, system, -(system.GameRules.NoteTiming.Cool - 1));
              } //*/
 
-            FindOutcomesAtTimeOffset(ref variants, currentState, system, 0);
+           // FindOutcomesAtTimeOffset(ref variants, currentState, system, 0);
 
             // Increment route IDs to allow to kill off bad routes when checkpoints are hit
             for (int i = 0; i < variants.Count; i++)
@@ -243,7 +243,7 @@ namespace ScoreSolver
 
             if(decision.Offset != 0)
             {
-                currentState.LastDecisionMeta = decision;
+                currentState.RecordDecision(decision);
             }
 
             return currentState;
@@ -279,7 +279,7 @@ namespace ScoreSolver
                 // remove old hold, add new hold, keep record of "switch over" if needed
                 if(nextState.HeldButtons != ButtonState.None)
                 {
-                    nextState.LastDecisionMeta = new SwitchDecisionMeta(nextState.HeldButtons, HoldButtons);
+                    nextState.RecordDecision(new SwitchDecisionMeta(nextState.HeldButtons, HoldButtons));
                 }
                 nextState.HeldButtons = HoldButtons;
             }
@@ -308,7 +308,7 @@ namespace ScoreSolver
         /// </summary>
         private SystemState NewStateForMiss(SystemState currentState, SimulationSystem system)
         {
-            currentState.LastDecisionMeta = new MissDecisionMeta(PressButtons);
+            currentState.RecordDecision(new MissDecisionMeta(PressButtons));
 
             // add button score
             currentState.Score += system.GameRules.ButtonScore.Correct.Worst * Util.CountButtons(PressButtons);
@@ -326,7 +326,7 @@ namespace ScoreSolver
         /// </summary>
         private SystemState NewStateForWrong(SystemState currentState, SimulationSystem system)
         {
-            currentState.LastDecisionMeta = new WrongDecisionMeta(PressButtons);
+            currentState.RecordDecision(new WrongDecisionMeta(PressButtons));
 
             // add button score
             currentState.Score += system.GameRules.ButtonScore.Wrong.Cool * Util.CountButtons(PressButtons);

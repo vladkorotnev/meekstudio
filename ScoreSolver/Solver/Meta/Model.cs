@@ -266,26 +266,17 @@ namespace ScoreSolver
         public uint RouteId = 0;
 
 
-        /// <summary>
-        /// Last time decision hint
-        /// </summary>
-        public DecisionMeta LastDecisionMeta
+        private List<DecisionMeta> _decisionRecord = new List<DecisionMeta>();
+
+        public void RecordDecision(DecisionMeta d)
         {
-            get
-            {
-                return _decisionMeta;
-            }
-            set
-            {
-                _decisionMeta = value;
-                if(_decisionMeta != null)
-                {
-                    _decisionMeta.Time = Time;
-                    _decisionMeta.Combo = Combo;
-                }
-            }
+            d.Time = Time;
+            d.Combo = Combo;
+            _decisionRecord.Add(d);
         }
-        private DecisionMeta _decisionMeta;
+
+        public List<DecisionMeta> DecisionRecord {  get { return _decisionRecord; } }
+
 
         public SystemState() { }
 
@@ -305,6 +296,7 @@ namespace ScoreSolver
             copy.Attain = Attain;
             copy.Time = Time;
             copy.RouteId = RouteId;
+            copy._decisionRecord = new List<DecisionMeta>(_decisionRecord); // <- shallow copy oughtta be enough 'cause meta is supposedly immutable
             return copy;
         }
         

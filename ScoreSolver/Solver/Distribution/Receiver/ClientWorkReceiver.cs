@@ -49,19 +49,19 @@ namespace ScoreSolver
             }
         }
 
-        public void ReceiveSolution(DecisionPathNode finalNode, WorkProvider from)
+        public void ReceiveSolution(SystemState finalNode, WorkProvider from)
         {
-            if (finalNode.state.Score < maxScore) return;
+            if (finalNode.Score < maxScore) return;
             semaphore.WaitOne();
-            Console.Error.WriteLine("[RCLI] Upload solution with score {0}", finalNode.state.Score);
+            Console.Error.WriteLine("[RCLI] Upload solution with score {0}", finalNode.Score);
 
             NetSolutionMessage msg = new NetSolutionMessage(finalNode);
             sock.SendObject(msg);
 
-            maxScore = finalNode.state.Score;
+            maxScore = finalNode.Score;
             semaphore.Release();
         }
 
-        public List<DecisionPathNode> Solutions { get { return new List<DecisionPathNode>(); } } //dummy
+        public List<SystemState> Solutions { get { return new List<SystemState>(); } } //dummy
     }
 }

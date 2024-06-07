@@ -95,8 +95,8 @@ namespace ScoreSolver
         /// <summary>
         /// The simulation result
         /// </summary>
-        public DecisionPathNode Solution { get; set; }
-        public NetSolutionMessage(DecisionPathNode rslt) : base(NetMessageKind.MSG_GIVE_RESULT)
+        public SystemState Solution { get; set; }
+        public NetSolutionMessage(SystemState rslt) : base(NetMessageKind.MSG_GIVE_RESULT)
         {
             Solution = rslt;
         }
@@ -112,8 +112,8 @@ namespace ScoreSolver
         /// <summary>
         /// Workloads to put on the queue
         /// </summary>
-        public List<DecisionPathNode> Workloads { get; set; }
-        public NetWorkloadMessage(List<DecisionPathNode> rslt) : base(NetMessageKind.MSG_GIVE_WORKLOAD)
+        public List<SystemState> Workloads { get; set; }
+        public NetWorkloadMessage(List<SystemState> rslt) : base(NetMessageKind.MSG_GIVE_WORKLOAD)
         {
             Workloads = rslt;
         }
@@ -130,10 +130,6 @@ namespace ScoreSolver
         /// Whether the client should keep the decision history
         /// </summary>
         public bool KeepHistory { get; private set; }
-        /// <summary>
-        /// Whether the client should keep the whole decision tree
-        /// </summary>
-        public bool KeepTree { get; private set; }
 
         /// <summary>
         /// Simulated system parameters
@@ -147,12 +143,11 @@ namespace ScoreSolver
         {
         }
 
-        public NetParamMessage(bool hist, bool tree, SimulationSystem sys, HappeningSet tl) : base(NetMessageKind.MSG_GIVE_ENVIRON)
+        public NetParamMessage(bool hist, SimulationSystem sys, HappeningSet tl) : base(NetMessageKind.MSG_GIVE_ENVIRON)
         {
             System = sys;
             Timeline = tl;
             KeepHistory = hist;
-            KeepTree = tree;
         }
     }
 

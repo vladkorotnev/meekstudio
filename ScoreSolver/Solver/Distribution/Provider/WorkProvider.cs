@@ -17,10 +17,6 @@ namespace ScoreSolver
         /// Whether the solvers need to keep the decision history
         /// </summary>
         bool MustKeepHistory { get; }
-        /// <summary>
-        /// Whether the solvers need to keep the whole state tree
-        /// </summary>
-        bool MustKeepTree { get; }
 
         /// <summary>
         /// Whether the provider has more workloads
@@ -29,11 +25,11 @@ namespace ScoreSolver
         /// <summary>
         /// Get a workload from the provider, if any, or null
         /// </summary>
-        DecisionPathNode DequeueWork();
+        SystemState DequeueWork();
         /// <summary>
         /// Add a workload to the provider for later dequeuing with <see cref="DequeueWork"/>
         /// </summary>
-        void EnqueueWork(DecisionPathNode work);
+        void EnqueueWork(SystemState work);
         /// <summary>
         /// The timeline in which work is performed
         /// </summary>
@@ -69,10 +65,9 @@ namespace ScoreSolver
         /// <param name="timeline">Timeline to simulate in</param>
         /// <param name="sys">System to simulate</param>
         /// <param name="keepHistory">Keep decision history or sacrifice it to save RAM</param>
-        public LocalWorkProvider(HappeningSet timeline, SimulationSystem sys, bool keepHistory = false, bool keepTree = false)
+        public LocalWorkProvider(HappeningSet timeline, SimulationSystem sys, bool keepHistory = false)
         {
             MustKeepHistory = keepHistory;
-            MustKeepTree = keepTree;
             Timeline = timeline;
             System = sys;
             CreateStartingElementIfNeeded();
@@ -86,12 +81,11 @@ namespace ScoreSolver
             if(asyncQueue.IsEmpty)
             {
                 var startState = new SystemState();
-                var startNode = new DecisionPathNode(null, startState, false);
-                asyncQueue.Enqueue(startNode);
+                asyncQueue.Enqueue(startState);
             }
         }
 
-        private ConcurrentQueue<DecisionPathNode> asyncQueue = new ConcurrentQueue<DecisionPathNode>();
+        private ConcurrentQueue<SystemState> asyncQueue = new ConcurrentQueue<SystemState>();
         private Semaphore checkpointSemaphore = new Semaphore(1, 1);
         private Dictionary<uint, long> checkpointToMaxScore = new Dictionary<uint, long>();
         private Dictionary<uint, uint> checkpointToBestRouteId = new Dictionary<uint, uint>();
@@ -110,9 +104,9 @@ namespace ScoreSolver
             }
         }
 
-        public DecisionPathNode DequeueWork()
+        public SystemState DequeueWork()
         {
-            DecisionPathNode work = null;
+            SystemState work = null;
             bool didSucceed = asyncQueue.TryDequeue(out work);
             if(didSucceed)
             {
@@ -121,7 +115,7 @@ namespace ScoreSolver
             return null;
         }
 
-        public void EnqueueWork(DecisionPathNode work)
+        public void EnqueueWork(SystemState work)
         {
             asyncQueue.Enqueue(work);
         }

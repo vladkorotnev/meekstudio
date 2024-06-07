@@ -18,11 +18,11 @@ namespace ScoreSolver
         /// The <see cref="WorkReceiver"/> this one is wrapped around
         /// </summary>
         public WorkReceiver Inner { get; set; }
-        public void ReceiveSolution(DecisionPathNode finalNode, WorkProvider from)
+        public void ReceiveSolution(SystemState finalNode, WorkProvider from)
         {
             Inner.ReceiveSolution(finalNode, from);
         }
-        public List<DecisionPathNode> Solutions { get { return Inner.Solutions; } }
+        public List<SystemState> Solutions { get { return Inner.Solutions; } }
 
         /// <summary>
         /// Wrap a <see cref="WorkReceiver"/> for network support
@@ -82,7 +82,7 @@ namespace ScoreSolver
                                     var rslt = res.Solution;
                                     if (rslt != null)
                                     {
-                                        Console.Error.WriteLine("[RECV] Got remote solution with score {0}", rslt.state.Score);
+                                        Console.Error.WriteLine("[RECV] Got remote solution with score {0}", rslt.Score);
                                         Inner.ReceiveSolution(rslt, null);
                                     }
                                     else

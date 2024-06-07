@@ -15,7 +15,7 @@ namespace ScoreSolver
         public static bool Verbose { get; private set; }
         static void Main(string[] args)
         {
-            Console.WriteLine("MeekScoreSolver v1.3.1 alpha (why is this not in Rust?)");
+            Console.WriteLine("MeekScoreSolver v1.3.3 alpha (why is this not in Rust?)");
             Console.WriteLine("by Akasaka, 2021-2022-2024. Special thanks to Korenkonder.");
             Console.WriteLine();
 
@@ -108,8 +108,7 @@ namespace ScoreSolver
                 }
 
                 bool hist = !GetArg("--no-keep-history");
-                bool tree = !GetArg("--no-keep-tree");
-                prov = new LocalWorkProvider(testLvl, s, hist, tree);
+                prov = new LocalWorkProvider(testLvl, s, hist);
 
                 if (isLanServer)
                 {
@@ -181,9 +180,9 @@ namespace ScoreSolver
             {
                 Console.Error.WriteLine("[MAIN] Using strategy: checkpointing");
                 var cks = new CheckpointingSolver(prov, recv);
-                cks.WidthFirstSearch = !GetArg("--depth-first");
-                if(!cks.WidthFirstSearch)
-                    Console.Error.WriteLine("[MAIN] Using mode: depth-first");
+                cks.WidthFirstSearch = GetArg("--broad-first");
+                if(cks.WidthFirstSearch)
+                    Console.Error.WriteLine("[MAIN] Using mode: broad-first");
 
                 solver = cks;
             }
@@ -194,14 +193,6 @@ namespace ScoreSolver
             if (GetArg("--limiter"))
                 solver.ThreadLimiterCount = int.Parse(GetArgParam("--limiter"));
 
-            if (GetArg("--gc-interval"))
-            {
-                solver.GCInterval = int.Parse(GetArgParam("--gc-interval"));
-                solver.PeriodicGC = (solver.GCInterval != 0);
-            }
-
-            solver.RealtimeGC = GetArg("--realtime-gc");
-
             Console.Error.WriteLine("[MAIN] Starting solver");
             sw.Start();
             solver.Solve();
@@ -211,19 +202,14 @@ namespace ScoreSolver
             Console.Error.WriteLine("[MAIN] RAM usage peaked at {0}MB", solver.PeakMemoryUse/1024/1024);
 
 
-            var maxSol = recv.Solutions.MaxBy(pn => pn.state.Score);
+            var maxSol = recv.Solutions.MaxBy(pn => pn.Score);
             if (maxSol != null)
             {
                 Console.WriteLine();
                 Console.WriteLine("===== MAX SCORE =====");
-                Console.WriteLine("score: {0}, attain {1}", maxSol.state.Score, prov.System.AttainPoint(maxSol.state));
+                Console.WriteLine("score: {0}, attain {1}", maxSol.Score, prov.System.AttainPoint(maxSol));
                 Console.WriteLine(SolutionToPrintableAdvisory(maxSol));
-                if(maxSol.parentNode != null)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("===== FULL TREE =====");
-                    Console.WriteLine(SolutionTree(maxSol));
-                }
+
             }
 
             if(isLanServer)
@@ -256,16 +242,13 @@ namespace ScoreSolver
 
             Console.WriteLine("Optional arguments:");
             Console.WriteLine("--naive:                   use naive non-optimized solver aka bruteforce mode");
-            Console.WriteLine("--depth-first:             use depth-first search in optimized solver");
+            Console.WriteLine("--broad-first:             use broad-first search in optimized solver (save RAM?)");
             Console.WriteLine("--no-worst-wrong:          search the perfect route (without misses or wrong notes)");
             Console.WriteLine("--checkpoints-by-time:     place checkpoints by time rather than combo (can affect precision)");
             Console.WriteLine("--play-time <1|2|3>:       time playing in session (affects safety time on easy/norm, default 1)");
             Console.WriteLine("--workers <1~>:            number of worker threads, default = CPU count");
             Console.WriteLine("--limiter <1~>:            number of preallocated work items, default = workers x2");
-            Console.WriteLine("--gc-interval <0~>:        number of allowed queue allocations between forced GC, 0 disables periodic GC, default 3000000");
-            Console.WriteLine("--realtime-gc:             force GC on every found solution, may slow things down but ease up RAM use");
             Console.WriteLine("--no-keep-history:         don't save decision history and instead only find max score");
-            Console.WriteLine("--no-keep-tree:            don't keep the whole decision tree, it uses A LOT of RAM in bruteforce mode");
             Console.WriteLine("--no-hold-score:           holds don't give any score");
             Console.WriteLine("--score-list-dir <dir>:    print score lists to files in dir");
             Console.WriteLine("--lan-server:              allow solvers from LAN to connect");
@@ -290,32 +273,14 @@ namespace ScoreSolver
             return Environment.GetCommandLineArgs().Contains(arg);
         }
 
-        public static String SolutionToPrintableAdvisory(DecisionPathNode solution)
+        public static String SolutionToPrintableAdvisory(SystemState solution)
         {
             StringBuilder sb = new StringBuilder();
-            foreach(var decision in solution.decisionHistory)
+            foreach(var decision in solution.DecisionRecord)
             {
                 sb.Append(String.Format("[Time {0} / Combo {1}] {2}\n", FmtTime(decision.Time), decision.Combo, decision.ToString()));
             }
 
-            return sb.ToString();
-        }
-
-        static string SolutionTree(DecisionPathNode solution)
-        {
-            StringBuilder sb = new StringBuilder();
-            var minLife = SystemState.MAX_LIFE;
-            var node = solution;
-            int i = 1;
-            do
-            {
-                if (node.state.Life < minLife) minLife = node.state.Life;
-                sb.Insert(0, String.Format("{6}\t{0}\t\t{1}\t\t[{2}]\t\t{4}\t\t{5}\t\t{3}\n", FmtTime(node.state.Time), node.state.Combo, Util.ButtonsToString(node.state.HeldButtons), (node.state.LastDecisionMeta != null ? node.state.LastDecisionMeta.ToString() : ""), node.state.Score, node.state.Life, i));
-                node = node.parentNode;
-                i++;
-            } while (node != null);
-            sb.Insert(0, "#\tTIME\t\tCOMBO\t\t[HOLD]\t\tSCORE\t\tLIFE\t\tDescription\n");
-            sb.Insert(0, String.Format("MIN LIFE = {0}\n", minLife));
             return sb.ToString();
         }
 

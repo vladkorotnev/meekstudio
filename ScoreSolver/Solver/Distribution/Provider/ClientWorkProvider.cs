@@ -32,7 +32,7 @@ namespace ScoreSolver
         private TcpClient sock;
         private IPEndPoint srvAddr;
         private Semaphore semaphore = new Semaphore(1, 1);
-        private ConcurrentQueue<DecisionPathNode> localQueue = new ConcurrentQueue<DecisionPathNode>();
+        private ConcurrentQueue<SystemState> localQueue = new ConcurrentQueue<SystemState>();
 
         /// <summary>
         /// Max number of items to keep in a local queue
@@ -70,7 +70,6 @@ namespace ScoreSolver
                 {
                     Connected = true;
                     MustKeepHistory = environRes.KeepHistory;
-                    MustKeepTree = environRes.KeepTree;
                     System = environRes.System;
                     Timeline = environRes.Timeline;
                     Console.Error.WriteLine("[WCLI] Received system settings from server");
@@ -80,7 +79,6 @@ namespace ScoreSolver
         }
 
         public bool MustKeepHistory { get; set; }
-        public bool MustKeepTree { get; set; }
         public HappeningSet Timeline { get; set; }
         public SimulationSystem System { get; set; }
 
@@ -124,14 +122,14 @@ namespace ScoreSolver
             }
         }
 
-        public DecisionPathNode DequeueWork()
+        public SystemState DequeueWork()
         {
             if(localQueue.IsEmpty || (StayHydrated && localQueue.Count < UnderrunFetchSize))
             {
                 FetchWork();
             }
 
-            DecisionPathNode wrk = null;
+            SystemState wrk = null;
             if (localQueue.TryDequeue(out wrk))
             {
                 return wrk;
@@ -140,7 +138,7 @@ namespace ScoreSolver
             return null;
         }
 
-        public void EnqueueWork(DecisionPathNode work)
+        public void EnqueueWork(SystemState work)
         {
             if (work == null) return;
             if(localQueue.Count < MaxLocalQueueSize)
@@ -150,7 +148,7 @@ namespace ScoreSolver
             }
 
             semaphore.WaitOne();
-            var sendMsg = new NetWorkloadMessage(new List<DecisionPathNode>() { work });
+            var sendMsg = new NetWorkloadMessage(new List<SystemState>() { work });
             sock.SendObject(sendMsg);
             semaphore.Release();
         }

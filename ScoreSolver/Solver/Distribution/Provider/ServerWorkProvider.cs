@@ -83,14 +83,14 @@ namespace ScoreSolver
                             switch (msg.Kind)
                             {
                                 case NetMessageKind.MSG_WANT_ENVIRON:
-                                    var res = new NetParamMessage(MustKeepHistory, MustKeepTree, System, Timeline);
+                                    var res = new NetParamMessage(MustKeepHistory, System, Timeline);
                                     client.SendObject(res);
                                     break;
 
                                 case NetMessageKind.MSG_WANT_WORKLOAD:
                                     var wlQuery = (NetWorkloadQueryMessage)msg;
                                     uint i = 0;
-                                    List<DecisionPathNode> workloads = new List<DecisionPathNode>();
+                                    List<SystemState> workloads = new List<SystemState>();
                                     while (i < wlQuery.HowMuch && HasMoreWork)
                                     {
                                         i++;
@@ -134,7 +134,6 @@ namespace ScoreSolver
         // ---- WorkProvider iface
 
         public bool MustKeepHistory { get { return Inner.MustKeepHistory;  } }
-        public bool MustKeepTree { get { return Inner.MustKeepTree; } }
         public bool HasMoreWork { get { return Inner.HasMoreWork; } }
         public HappeningSet Timeline { get { return Inner.Timeline; } }
         public SimulationSystem System { get { return Inner.System; } }
@@ -148,12 +147,12 @@ namespace ScoreSolver
             }
         }
 
-        public DecisionPathNode DequeueWork()
+        public SystemState DequeueWork()
         {
             return Inner.DequeueWork();
         }
 
-        public void EnqueueWork(DecisionPathNode work)
+        public void EnqueueWork(SystemState work)
         {
             Inner.EnqueueWork(work);
         }

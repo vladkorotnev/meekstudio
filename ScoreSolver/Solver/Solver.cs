@@ -9,65 +9,6 @@ using System.Threading;
 
 namespace ScoreSolver
 {
-    /// <summary>
-    /// A point in the playthrough decision tree
-    /// </summary>
-    [Serializable]
-    class DecisionPathNode
-    {
-        /// <summary>
-        /// System state at the current point in the tree
-        /// </summary>
-        public SystemState state;
-
-        /// <summary>
-        /// Step of current node
-        /// </summary>
-        public ulong generation;
-
-        /// <summary>
-        /// Decision history leading to this node
-        /// </summary>
-        public List<DecisionMeta> decisionHistory;
-
-        /// <summary>
-        /// Parent node in the game tree
-        /// </summary>
-        public DecisionPathNode parentNode;
-
-        public void Update(SystemState sysState)
-        {
-            state = sysState;
-            if (sysState.LastDecisionMeta != null)
-            {
-                decisionHistory.Add(sysState.LastDecisionMeta);
-                sysState.LastDecisionMeta = null;
-            }
-        }
-
-        public DecisionPathNode(DecisionPathNode parent, SystemState sysState, bool keepParent)
-        {
-            state = sysState;
-            decisionHistory = new List<DecisionMeta>();
-
-            if(parent != null)
-            {
-                generation = parent.generation + 1;
-                decisionHistory.AddRange(parent.decisionHistory);
-                if (sysState.LastDecisionMeta != null)
-                {
-                    decisionHistory.Add(sysState.LastDecisionMeta);
-                    if(!keepParent)
-                        sysState.LastDecisionMeta = null;
-                }
-                if(keepParent && parent != this)
-                {
-                    parentNode = parent;
-                }
-            }
-        }
-    }
-    
 
     /// <summary>
     /// An abstract multi-threaded solver
@@ -97,24 +38,11 @@ namespace ScoreSolver
         /// </summary>
         public int ThreadLimiterCount { get; set; }
 
-        /// <summary>
-        /// Interval between forced GC (in queue allocs)
-        /// </summary>
-        public int GCInterval { get; set; }
 
         protected int CurrentWorkerCount = 0;
-        private int CurrentGCCount = 0;
         protected Semaphore ThreadLimiter;
         protected bool interruptFlag;
 
-        /// <summary>
-        /// Whether to do GC every <see cref="GCInterval"/> queue allocs
-        /// </summary>
-        public bool PeriodicGC { get; set; }
-        /// <summary>
-        /// Whether to do GC every time a solution is found
-        /// </summary>
-        public bool RealtimeGC { get; set; }
         /// <summary>
         /// Peak memory usage in bytes
         /// </summary>
@@ -129,8 +57,6 @@ namespace ScoreSolver
         {
             ParallelWorkerCount =  Environment.ProcessorCount;
             ThreadLimiterCount = ParallelWorkerCount * 4;
-            GCInterval = 3000000;
-            PeriodicGC = true;
             Receiver = recv;
             Provider = prov;
         }
@@ -143,16 +69,13 @@ namespace ScoreSolver
             BadSolutions = 0;
             CheckedSolutions = 0;
             CheckedOutcomes = 0;
-            CurrentGCCount = 0;
             PeakMemoryUse = 0;
             interruptFlag = false;
 
             ThreadLimiter = new Semaphore(ThreadLimiterCount, ThreadLimiterCount); 
 
-            ThreadPool.SetMinThreads(1, 0);
-            ThreadPool.SetMaxThreads(ParallelWorkerCount, 0);
-
-            //GC.AddMemoryPressure(1024 * 1024);
+            ThreadPool.SetMinThreads(ParallelWorkerCount, ParallelWorkerCount);
+            ThreadPool.SetMaxThreads(ParallelWorkerCount, ParallelWorkerCount);
 
             Stopwatch sw = new Stopwatch();
 
@@ -163,6 +86,11 @@ namespace ScoreSolver
             long lastChkSol = 0;
             long lastChkNode = 0;
             sw.Start();
+
+            
+            GC.TryStartNoGCRegion(10 * 1024L * 1024L);
+            GC.RemoveMemoryPressure(1024L * 1024L * 1024L);
+
             while(sched.IsAlive)
             {
                 Thread.Sleep(300);
@@ -192,7 +120,7 @@ namespace ScoreSolver
                     sw.Restart();
                 }
             }
-            
+
             GC.Collect();
         }
 
@@ -208,25 +136,9 @@ namespace ScoreSolver
         /// <summary>
         /// Enqueue a decision tree item to be calculated
         /// </summary>
-        protected void SolveFromNodeAsync(DecisionPathNode node)
+        protected void SolveFromNodeAsync(SystemState node)
         {
             Provider.EnqueueWork(node);
-            if (false) { 
-                int nowGcInt = Interlocked.CompareExchange(ref CurrentGCCount, 0, 0);
-                if (nowGcInt >= GCInterval)
-                {
-                    Interlocked.Exchange(ref CurrentGCCount, 0);
-                    if(Program.Verbose)
-                        Console.Error.WriteLine("[SCHED] Garbage collection enforcement taking place...");
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
-                    GC.Collect();
-                }
-                else
-                {
-                    Interlocked.Increment(ref CurrentGCCount);
-                }
-            }
         }
 
         /// <summary>
@@ -263,7 +175,7 @@ namespace ScoreSolver
                     }
 
                     // Spawn a new work item in the thread pool
-                    DecisionPathNode node = Provider.DequeueWork();
+                    SystemState node = Provider.DequeueWork();
                     if (node != null)
                     {
                         Interlocked.Increment(ref CurrentWorkerCount);
@@ -306,7 +218,7 @@ namespace ScoreSolver
         /// <summary>
         /// Iterate through viable outcomes of the specified point in the decision tree and save the solutions in <see cref="Receiver"/>
         /// </summary>
-        abstract protected void SolveFromNodeEx(DecisionPathNode node);
+        abstract protected void SolveFromNodeEx(SystemState node);
 
     }
 

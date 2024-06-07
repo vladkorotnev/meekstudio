@@ -16,23 +16,23 @@ namespace ScoreSolver
 
         public bool WidthFirstSearch { get; set; }
 
-        override protected void SolveFromNodeEx(DecisionPathNode startNode)
+        override protected void SolveFromNodeEx(SystemState startNode)
         {
             var node = startNode;
             while (node != null && !interruptFlag)
             {
-                if (Provider.IsRouteDead(node.state.RouteId))
+                if (Provider.IsRouteDead(node.RouteId))
                 {
                     if(Program.Verbose)
-                        Console.Error.WriteLine("[SOLVE] abandoning item of route id {0} because it was killed", node.state.RouteId);
+                        Console.Error.WriteLine("[SOLVE] abandoning item of route id {0} because it was killed", node.RouteId);
                     node = null;
                     continue;
                 }
 
-                var nextHappening = Provider.Timeline.NextHappeningFromTime(node.state.Time);
+                var nextHappening = Provider.Timeline.NextHappeningFromTime(node.Time);
                 if (nextHappening != null)
                 {
-                    var nextStates = nextHappening.GetPotentialOutcomes(node.state, Provider.System);
+                    var nextStates = nextHappening.GetPotentialOutcomes(node, Provider.System);
                     Interlocked.Increment(ref CheckedOutcomes);
                     if (nextHappening is OptimizationCheckpointHappening)
                     {
@@ -49,7 +49,7 @@ namespace ScoreSolver
                         } 
                         else
                         {
-                            node = new DecisionPathNode(Provider.MustKeepHistory ? node : null, chkState, Provider.MustKeepTree);
+                            node = chkState;
                         }
                         continue;
                     }
@@ -64,7 +64,7 @@ namespace ScoreSolver
                                 var atn = Provider.System.AttainPoint(nextState);
                                 if (atn >= Provider.System.GameRules.ClearAttain)
                                 {
-                                    var finishNode = new DecisionPathNode(node, nextState, Provider.MustKeepTree);
+                                    var finishNode = node;
                                     Receiver.ReceiveSolution(finishNode, Provider);
                                     node = null;
                                     Interlocked.Increment(ref CheckedSolutions);
@@ -77,11 +77,6 @@ namespace ScoreSolver
                                     Interlocked.Increment(ref CheckedSolutions);
                                     node = null;
                                 }
-                                if (RealtimeGC)
-                                {
-                                    GC.Collect();
-                                    GC.WaitForPendingFinalizers();
-                                }
                             }
                             else if (nextState.IsFailed)
                             {
@@ -91,31 +86,19 @@ namespace ScoreSolver
                                 if(Program.Verbose)
                                      Console.Error.WriteLine("[SOLVE] found bad solution track life={0}", nextState.Life);
                                 node = null;
-                                if (RealtimeGC)
-                                {
-                                    GC.Collect();
-                                    GC.WaitForPendingFinalizers();
-                                }
                             }
                             else
                             {
                                 if (i == nextStates.Count - 1 && !WidthFirstSearch)
                                 {
                                     // reusing the same thread is good for the environment
-                                    
-                                    if(Provider.MustKeepTree)
-                                    {
-                                        node = new DecisionPathNode(Provider.MustKeepHistory ? node : null, nextState, Provider.MustKeepTree);
-                                    }
-                                    else
-                                    {
-                                        node.Update(nextState);
-                                    }
+
+                                    node = nextState;
                                 }
                                 else 
                                 {
                                     // Put the node onto the queue
-                                    SolveFromNodeAsync(new DecisionPathNode(Provider.MustKeepHistory ? node : null, nextState, Provider.MustKeepTree));
+                                    SolveFromNodeAsync(nextState);
                                 }
                             }
                         }
