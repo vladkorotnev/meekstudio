@@ -13,8 +13,8 @@ namespace ScoreSolver
     {
         public uint Time { get; set; }
         public uint Combo { get; set; }
-
         public uint NoteNumber { get; set; }
+        public NoteHitDecisionKind DecisionKind { get; set; }
         public abstract override string ToString();
     }
 
@@ -46,6 +46,7 @@ namespace ScoreSolver
         public MissDecisionMeta(ButtonState missedButtons)
         {
             Buttons = missedButtons;
+            DecisionKind = NoteHitDecisionKind.Miss;
         }
 
         public override string ToString()
@@ -64,6 +65,7 @@ namespace ScoreSolver
         public WrongDecisionMeta(ButtonState missedButtons)
         {
             Buttons = missedButtons;
+            DecisionKind = NoteHitDecisionKind.Wrong;
         }
 
         public override string ToString()
@@ -103,6 +105,7 @@ namespace ScoreSolver
         {
             OldButtons = old;
             NewButtons = next;
+            DecisionKind = NoteHitDecisionKind.Switch;
         }
 
         public override string ToString()

@@ -122,7 +122,9 @@ namespace ScoreSolver
 
             currentState.NoteNumber += 1;
 
-            FindOutcomesAtTimeOffset(ref variants, currentState, system, 0);
+            var whatToDo = system.PlayerSkill.Decide(currentState, this, system);
+
+            FindOutcomesAtTimeOffset(ref variants, whatToDo.Decisions, currentState, system, whatToDo.Offset);
 
             // Increment route IDs to allow to kill off bad routes when checkpoints are hit
             for (int i = 0; i < variants.Count; i++)
@@ -140,73 +142,44 @@ namespace ScoreSolver
             return variants;
         }
 
-        protected List<SystemState> FindOutcomesAtTimeOffset(ref List<SystemState> variants, SystemState s, SimulationSystem system, int timeOffset)
+        protected List<SystemState> FindOutcomesAtTimeOffset(ref List<SystemState> variants, NoteHitDecisionKind todos, SystemState s, SimulationSystem system, int timeOffset)
         {
-            var currentState = s;
-            currentState = system.PassTime(currentState, (uint) (Time + timeOffset));
+            s = system.PassTime(s, (uint) (Time + timeOffset));
 
-            if (currentState.HeldButtons == ButtonState.None)
+            uint i = todos.Count();
+            foreach(var option in todos.AllCases())
             {
-                // we aren't holding anything, so hit and hold anything that arrives
-                // and consider that the only option
-                variants.Add(NewStateForHitAndHold(currentState, system, false));
-            }
-            else
-            {
-                // we are holding something so ...
-                if ((currentState.HeldButtons & PressButtons) == ButtonState.None)
+                if(todos.HasFlag(option))
                 {
-                    // Option 1. No interference between currently held button and incoming, and no hold needed
+                    i--;
+                    var state = (i == 0 
+                        ? s 
+                        : s.Clone()
+                     );
 
-                    if (HoldButtons != ButtonState.None)
+                    switch(option)
                     {
-                        // Option 1.1. just hit it as is, optionally holding
-                        var spareState = currentState.Clone();
-                        variants.Add(NewStateForHitAndHold(currentState, system, false));
-                        // Option 1.2. if it has hold, switch to new hold
-                        variants.Add(NewStateForHitAndHold(spareState, system, true));
-                    } 
-                    else
-                    {
-                        // Option 1.1. just hit it as is, optionally holding
-                        variants.Add(NewStateForHitAndHold(currentState, system, false));
-                    }
-                }
-                else if ((currentState.HeldButtons & PressButtons) != ButtonState.None)
-                {
-                    // Option 2. There IS interference between buttons to press and currently held
+                        case NoteHitDecisionKind.Hit:
+                            state = NewStateForHitAndHold(state, system, false);
+                            break;
 
+                        case NoteHitDecisionKind.Switch:
+                            state = NewStateForHitAndHold(state, system, true);
+                            break;
 
-                    if (
-                        !system.PlayerSkill.ProhibitMisses &&
-                        (HoldButtons == ButtonState.None || system.PlayerSkill.AllowMissHold) // <- never yet seen a chart where need to miss a hold
-                        )
-                    {
-                        // Option 2.1. release old ones and press new ones
-                        var spareState = currentState.Clone();
-                        variants.Add(NewStateForHitAndHold(currentState, system, true));
+                        case NoteHitDecisionKind.Wrong:
+                            state = NewStateForWrong(state, system);
+                            break;
 
-                        // if we have enough empty buttons to press...
-                        if (RuleSet.ButtonTotalCount - spareState.HeldButtonCount >= Util.CountButtons(PressButtons))
-                        {
-                            // Option 2.3. hit wrong buttons
-                            variants.Add(NewStateForWrong(spareState, system));
-                        }
-                        else
-                        {
-                            // option 2.2 moved, only when not enough buttons -- completely miss
-                            // because Wrong is better in both Lifebar and Score than Worst
-                            variants.Add(NewStateForMiss(spareState, system));
-                        }
-                    } 
-                    else
-                    {
-                        // Option 2.1. release old ones and press new ones
-                        variants.Add(NewStateForHitAndHold(currentState, system, true));
+                        case NoteHitDecisionKind.Miss:
+                            state = NewStateForMiss(state, system);
+                            break;
                     }
 
+                    variants.Add(state);
                 }
             }
+
             return variants;
         }
 
