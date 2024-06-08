@@ -31,6 +31,11 @@ namespace ScoreSolver
             if (time == 0) return Events[0];
             time += 1;
 
+            if(EventTimes == null)
+            {
+                InvalidateIndex();
+            }
+
             int idx = EventTimes.BinarySearch(time);
             if(idx >= 0)
             {
@@ -52,7 +57,7 @@ namespace ScoreSolver
             }
         }
 
-        private void InvalidateIndex()
+        public void InvalidateIndex()
         {
             EventTimes = new List<uint>(Events.Select(x => x.Time));
             EndTime = Events.Find(x => x is EndOfLevelHappening).Time;

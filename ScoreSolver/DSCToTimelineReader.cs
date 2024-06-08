@@ -136,6 +136,7 @@ namespace ScoreSolver
                 }
             }
 
+            dst.InvalidateIndex();
             return dst;
         }
 
