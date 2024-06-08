@@ -13,6 +13,8 @@ namespace ScoreSolver
     {
         public uint Time { get; set; }
         public uint Combo { get; set; }
+
+        public uint NoteNumber { get; set; }
         public abstract override string ToString();
     }
 
@@ -34,21 +36,6 @@ namespace ScoreSolver
         }
     }
 
-    [Serializable]
-    class HitDecisionMeta : DecisionMeta
-    {
-        public ButtonState Buttons { get; set; }
-        public HitDecisionMeta(ButtonState missedButtons)
-        {
-            Buttons = missedButtons;
-        }
-
-        public override string ToString()
-        {
-            return "PRESS: " + Util.ButtonsToString(Buttons);
-        }
-    }
-
     /// <summary>
     /// A hint telling the user some notes were allowed to be missed
     /// </summary>
@@ -63,7 +50,7 @@ namespace ScoreSolver
 
         public override string ToString()
         {
-            return "WORST: " + Util.ButtonsToString(Buttons);
+            return "Keep holding, get WORST: " + Util.ButtonsToString(Buttons);
         }
     }
 
@@ -81,7 +68,7 @@ namespace ScoreSolver
 
         public override string ToString()
         {
-            return "WRONG: " + Util.ButtonsToString(Buttons);
+            return "Keep holding, get WRONG: " + Util.ButtonsToString(Buttons);
         }
     }
 
@@ -120,7 +107,7 @@ namespace ScoreSolver
 
         public override string ToString()
         {
-            if (NewButtons == ButtonState.None) return "";
+            if (NewButtons == ButtonState.None) return "Let go: " + Util.ButtonsToString(OldButtons);
             return Util.ButtonsToString(OldButtons) + " -> " + Util.ButtonsToString(NewButtons);
         }
     }

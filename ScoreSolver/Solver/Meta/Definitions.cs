@@ -78,6 +78,19 @@ namespace ScoreSolver
         public int Fine;
         public int Safe;
         public int Sad;
+
+        public int For(HitKind kind)
+        {
+            switch (kind)
+            {
+                case HitKind.Cool: return Cool;
+                case HitKind.Fine: return Fine;
+                case HitKind.Safe: return Safe;
+                case HitKind.Sad: return Sad;
+                default:
+                    throw new ArgumentOutOfRangeException("kind", "No timing for specified hit kind");
+            }
+        }
     }
 
     /// <summary>

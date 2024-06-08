@@ -265,17 +265,23 @@ namespace ScoreSolver
         /// </summary>
         public uint RouteId = 0;
 
+        /// <summary>
+        /// Note number for later decision to state matching when doing a second pass
+        /// </summary>
+        public uint NoteNumber = 0;
 
-        private List<DecisionMeta> _decisionRecord = new List<DecisionMeta>();
+
+        private LinkedList<DecisionMeta> _decisionRecord = new LinkedList<DecisionMeta>();
 
         public void RecordDecision(DecisionMeta d)
         {
             d.Time = Time;
             d.Combo = Combo;
-            _decisionRecord.Add(d);
+            d.NoteNumber = NoteNumber;
+            _decisionRecord.AddLast(d);
         }
 
-        public List<DecisionMeta> DecisionRecord {  get { return _decisionRecord; } }
+        public LinkedList<DecisionMeta> DecisionRecord {  get { return _decisionRecord; } }
 
 
         public SystemState() { }
@@ -296,7 +302,8 @@ namespace ScoreSolver
             copy.Attain = Attain;
             copy.Time = Time;
             copy.RouteId = RouteId;
-            copy._decisionRecord = new List<DecisionMeta>(_decisionRecord); // <- shallow copy oughtta be enough 'cause meta is supposedly immutable
+            copy.NoteNumber = NoteNumber;
+            copy._decisionRecord = new LinkedList<DecisionMeta>(_decisionRecord); // <- shallow copy oughtta be enough 'cause meta is supposedly immutable
             return copy;
         }
         

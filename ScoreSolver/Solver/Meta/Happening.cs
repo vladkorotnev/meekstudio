@@ -100,6 +100,7 @@ namespace ScoreSolver
         /// </summary>
         public ButtonState HoldButtons { get; private set; }
 
+
         public NoteHappening(uint evtTime, ButtonState noteButtons, ButtonState holdButtons) : base(evtTime)
         {
             if((noteButtons & holdButtons) == ButtonState.None && holdButtons != ButtonState.None)
@@ -119,18 +120,9 @@ namespace ScoreSolver
         {
             var variants = new List<SystemState>(3);
 
-            // POC: late cool if holding
-            // TODO: proper logic across all other types, i.e. lookback and lookahead
-             if(currentState.HeldButtons != ButtonState.None)
-             {
-                FindOutcomesAtTimeOffset(ref variants, currentState, system, system.GameRules.NoteTiming.Cool - 1);
-             }
-             else
-             {
-                FindOutcomesAtTimeOffset(ref variants, currentState, system, -(system.GameRules.NoteTiming.Cool - 1));
-             } //*/
+            currentState.NoteNumber += 1;
 
-           // FindOutcomesAtTimeOffset(ref variants, currentState, system, 0);
+            FindOutcomesAtTimeOffset(ref variants, currentState, system, 0);
 
             // Increment route IDs to allow to kill off bad routes when checkpoints are hit
             for (int i = 0; i < variants.Count; i++)
@@ -249,6 +241,22 @@ namespace ScoreSolver
             return currentState;
         }
 
+        public uint FrameLossSwitchingWith(ButtonState other, Skill skill)
+        {
+            if((PressButtons & other) != ButtonState.None)
+            {
+                // there will be a repress in this switchover
+                // account for point loss in the re-press
+                return skill.FrameLossOnRepress;
+            } 
+            else
+            {
+                // just a switchover
+                // account for point loss in the switchover
+                return skill.FrameLossOnSwitch;
+            }
+        }
+
         /// <summary>
         /// Hit state transition for all incoming notes, which also will hold the newly incoming hold notes
         /// </summary>
@@ -259,18 +267,7 @@ namespace ScoreSolver
 
             if (nextState.HeldButtons != ButtonState.None)
             {
-                if ((nextState.HeldButtons & PressButtons) != ButtonState.None)
-                {
-                    // there will be a repress in this switchover
-                    // account for point loss in the re-press
-                    nextState.Time += system.PlayerSkill.FrameLossOnRepress;
-                }
-                else
-                {
-                    // just a switchover
-                    // account for point loss in the switchover
-                    nextState.Time += system.PlayerSkill.FrameLossOnSwitch;
-                }
+                nextState.Time += FrameLossSwitchingWith(nextState.HeldButtons, system.PlayerSkill);
             }
 
             // start holding if anything to hold is present
@@ -381,15 +378,16 @@ namespace ScoreSolver
 
         public override List<SystemState> GetPotentialOutcomes(SystemState currentState, SimulationSystem system)
         {
-            SystemState newState = base.NewStateForJustHitting(currentState, system);
+            currentState.NoteNumber += 1;
+            SystemState newState = NewStateForJustHitting(currentState, system);
             long slideBonus = Math.Min(system.GameRules.SlideSegmentMaxCount, SegmentCount+1) * system.GameRules.SlideSegmentBonus; // Segment bonus
             if(SegmentCount > 0)
             {
                 slideBonus += system.GameRules.MaxChainBonus; // Assuming max chain
             }
 
-            currentState.SlideBonus += slideBonus;
-            currentState.Score += slideBonus;
+            newState.SlideBonus += slideBonus;
+            newState.Score += slideBonus;
             return new List<SystemState>() { newState };
         }
     }

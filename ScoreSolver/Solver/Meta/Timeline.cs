@@ -54,6 +54,11 @@ namespace ScoreSolver
             }
         }
 
+        private void InvalidateIndex()
+        {
+            EventTimes = null;
+        }
+
         /// <summary>
         /// Add checkpoints according to provided game rules
         /// </summary>
@@ -74,9 +79,20 @@ namespace ScoreSolver
              * 
              * The actual score comparison and branch discard logic is located inside <see cref="CheckpointingSolver"/> class.
              **/
-                uint lastHoldStartTime = 0;
+
+            /**
+             *  UPDATE: 2024-06-07
+             *  
+             *  Also count potential Worst/Wrong cases and account for lost life recovery, thus we need to put the checkpoint not after MinComboNotes+1 note,
+             *  but after max(MinComboNotes+1, LostLifeInSegment/LifePerOneCool + 1)
+             */
+
+            uint lastHoldStartTime = 0;
             uint checkpointIdCounter = 0;
             uint skipCounter = 0;
+            int lifeLossInSegment = 0;
+            ButtonState busyButtons = ButtonState.None;
+
             bool needCheckpoint = false;
 
             for (int i = 0; i < Events.Count; i++)
@@ -86,9 +102,8 @@ namespace ScoreSolver
                 // No insertions after end
                 if (evt is EndOfLevelHappening) break;
 
-                if (evt is NoteHappening)
+                if (evt is NoteHappening note)
                 {
-                    var note = ((NoteHappening)evt);
                     if (note.HoldButtons != ButtonState.None)
                     {
                         // Hold started or continued, reset counters of time and notes
@@ -106,11 +121,13 @@ namespace ScoreSolver
                         lastHoldStartTime = note.Time;
                         needCheckpoint = true;
                         skipCounter = 0;
+                        lifeLossInSegment = 0;
+                        busyButtons = note.HoldButtons;
                     }
                     else if (evt.Time > (lastHoldStartTime + rules.MaxTicksInHold) && needCheckpoint)
                     {
-                        // theoretically max hold was reached, add checkpoint after MinCombo+1 notes
-                        if (skipCounter >= (rules.ComboBonusMinCombo + 1))
+                        // theoretically max hold was reached, add checkpoint after MinCombo+1 notes or enough notes to recover potential life loss in the segment
+                        if (skipCounter >= Math.Max(rules.ComboBonusMinCombo, lifeLossInSegment / rules.LifeScore.Correct.Cool) + 1)
                         {
                             checkpointIdCounter++;
                             var ckp = new OptimizationCheckpointHappening(evt.Time + 1, checkpointIdCounter);
@@ -122,8 +139,37 @@ namespace ScoreSolver
                         }
                         else skipCounter++;
                     }
+                    else
+                    {
+                        if (busyButtons != ButtonState.None)
+                        {
+                            if ((busyButtons & note.PressButtons) != ButtonState.None)
+                            {
+                                // interference found, add life loss
+                                if (RuleSet.ButtonTotalCount - Util.CountButtons(busyButtons) >= Util.CountButtons(note.PressButtons))
+                                {
+                                    // can do a WRONG, no point in other than cool wrong
+                                    lifeLossInSegment += Math.Abs(rules.LifeScore.Wrong.Cool);
+                                }
+                                else
+                                {
+                                    // can only WORST
+                                    lifeLossInSegment += Math.Abs(rules.LifeScore.Wrong.Worst);
+                                }
+                            } 
+                            else
+                            {
+                                // No interference, this note can be hit properly
+                                lifeLossInSegment -= Math.Abs(rules.LifeScore.Correct.Cool);
+                                // Do not count the overflow towards life bonus because we don't have an idea of where we started
+                                if (lifeLossInSegment <= 0) lifeLossInSegment = 0;
+                            }
+                        }
+                    }
                 }
             }
+
+            InvalidateIndex();
         }
 
         /// <summary>
@@ -174,6 +220,8 @@ namespace ScoreSolver
                     needCheckpoint = false;
                 }
             }
+
+            InvalidateIndex();
         }
 
         public HappeningSet()

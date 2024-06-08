@@ -80,6 +80,7 @@ namespace ScoreSolver
                 Console.Error.WriteLine("[MAIN] {0} notes, RefScore={1}", testLvl.Events.Where(x => x is NoteHappening).Count(), s.RefScore);
 
                 Console.Error.WriteLine("[MAIN] Setting up simulation...");
+
                 if (!naiveMode)
                 {
                     if(GetArg("--checkpoints-by-time"))
@@ -278,7 +279,7 @@ namespace ScoreSolver
             StringBuilder sb = new StringBuilder();
             foreach(var decision in solution.DecisionRecord)
             {
-                sb.Append(String.Format("[Time {0} / Combo {1}] {2}\n", FmtTime(decision.Time), decision.Combo, decision.ToString()));
+                sb.Append(String.Format("[Time {0} / Combo {1} / Note# {3}] {2}\n", FmtTime(decision.Time), decision.Combo, decision.ToString(), decision.NoteNumber));
             }
 
             return sb.ToString();
