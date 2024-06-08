@@ -52,6 +52,11 @@ namespace ScoreSolver
         /// </summary>
         /// <returns>Whether the score was bigger than the current maximum for the checkpoint</returns>
         bool CheckScoreOfCheckpoint(uint checkpointId, long score, uint routeId);
+
+        /// <summary>
+        /// Create a "seed node" with the initial system state
+        /// </summary>
+        void CreateStartingElementIfNeeded();
     }
 
     /// <summary>
@@ -76,7 +81,7 @@ namespace ScoreSolver
         /// <summary>
         /// Create a "seed node" with the initial system state
         /// </summary>
-        private void CreateStartingElementIfNeeded()
+        public void CreateStartingElementIfNeeded()
         {
             if(asyncQueue.IsEmpty)
             {

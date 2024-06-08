@@ -18,6 +18,9 @@ namespace ScoreSolver
         /// List of events in the playthrough
         /// </summary>
         public List<Happening> Events { get; private set; }
+
+        public uint EndTime { get; private set; }
+
         private List<uint> EventTimes = null;
 
         /// <summary>
@@ -27,11 +30,6 @@ namespace ScoreSolver
         {
             if (time == 0) return Events[0];
             time += 1;
-
-            if(EventTimes == null)
-            {
-                EventTimes = new List<uint>(Events.Select(x => x.Time));
-            }
 
             int idx = EventTimes.BinarySearch(time);
             if(idx >= 0)
@@ -56,7 +54,8 @@ namespace ScoreSolver
 
         private void InvalidateIndex()
         {
-            EventTimes = null;
+            EventTimes = new List<uint>(Events.Select(x => x.Time));
+            EndTime = Events.Find(x => x is EndOfLevelHappening).Time;
         }
 
         /// <summary>
@@ -231,6 +230,7 @@ namespace ScoreSolver
         public HappeningSet(params Happening[] happenings) : this()
         {
             Events.AddRange(happenings.OrderBy(x => x.Time));
+            InvalidateIndex();
         }
     }
 }

@@ -87,9 +87,13 @@ namespace ScoreSolver
             long lastChkNode = 0;
             sw.Start();
 
-            
-            GC.TryStartNoGCRegion(10 * 1024L * 1024L);
-            GC.RemoveMemoryPressure(1024L * 1024L * 1024L);
+
+            try
+            {
+                GC.TryStartNoGCRegion(10 * 1024L * 1024L);
+                GC.RemoveMemoryPressure(1024L * 1024L * 1024L);
+            }
+            catch (Exception) { }
 
             while(sched.IsAlive)
             {

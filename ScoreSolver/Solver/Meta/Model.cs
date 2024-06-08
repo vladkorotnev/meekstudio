@@ -269,6 +269,7 @@ namespace ScoreSolver
         /// Note number for later decision to state matching when doing a second pass
         /// </summary>
         public uint NoteNumber = 0;
+        public uint LastNoteTime = 0;
 
 
         private LinkedList<DecisionMeta> _decisionRecord = new LinkedList<DecisionMeta>();

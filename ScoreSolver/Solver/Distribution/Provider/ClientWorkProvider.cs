@@ -163,6 +163,11 @@ namespace ScoreSolver
             throw new NotImplementedException();
         }
 
+        public void CreateStartingElementIfNeeded()
+        {
+            // no-op
+        }
+
         public bool IsSafeToStop
         {
             get

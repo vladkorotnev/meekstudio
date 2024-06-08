@@ -180,5 +180,10 @@ namespace ScoreSolver
 
             return isSuperior;
         }
+
+        public void CreateStartingElementIfNeeded()
+        {
+            Inner.CreateStartingElementIfNeeded();
+        }
     }
 }

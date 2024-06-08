@@ -8,8 +8,6 @@ using System.Text;
 
 namespace ScoreSolver
 {
-   
-    // IDEA: collapse straight hit only notes not interfering with holds into a single optimized step, only calculating life bonus for them separately
     class Program
     {
         public static bool Verbose { get; private set; }
@@ -33,6 +31,8 @@ namespace ScoreSolver
 
             WorkProvider prov = null;
             WorkReceiver recv = null;
+            HappeningSet timeline = null;
+            SimulationSystem simSys = null;
 
             if (!isLanWorker)
             {
@@ -72,12 +72,12 @@ namespace ScoreSolver
                 RuleSet rs = (GetArg("--no-hold-score") ? new HoldlessFTRuleSet(diff, playTime) : new FutureToneRuleSet(diff, playTime));
                 Skill skill = new GeneralSkill();
                 skill.ProhibitMisses = GetArg("--no-worst-wrong");
-                SimulationSystem s = new SimulationSystem(0, skill, rs);
+                simSys = new SimulationSystem(0, skill, rs);
                 Console.Error.WriteLine("[MAIN] Reading DSC...");
                 var loader = new DSCToTimelineReader();
-                var testLvl = loader.TimelineOfDsc(fpath);
-                s.SetRefscoreFromTimeline(testLvl);
-                Console.Error.WriteLine("[MAIN] {0} notes, RefScore={1}", testLvl.Events.Where(x => x is NoteHappening).Count(), s.RefScore);
+                timeline = loader.TimelineOfDsc(fpath);
+                simSys.SetRefscoreFromTimeline(timeline);
+                Console.Error.WriteLine("[MAIN] {0} notes, RefScore={1}", timeline.Events.Where(x => x is NoteHappening).Count(), simSys.RefScore);
 
                 Console.Error.WriteLine("[MAIN] Setting up simulation...");
 
@@ -85,13 +85,13 @@ namespace ScoreSolver
                 {
                     if(GetArg("--checkpoints-by-time"))
                     {
-                        testLvl.InsertCheckpointsByTimeFor(rs);
+                        timeline.InsertCheckpointsByTimeFor(rs);
                     }
                     else
                     {
-                        testLvl.InsertCheckpointsFor(rs);
+                        timeline.InsertCheckpointsFor(rs);
                     }
-                    Console.Error.WriteLine("[MAIN] Created {0} checkpoints", testLvl.Events.Where(x => x is OptimizationCheckpointHappening).Count());
+                    Console.Error.WriteLine("[MAIN] Created {0} checkpoints", timeline.Events.Where(x => x is OptimizationCheckpointHappening).Count());
                 }
 
                 if (GetArg("--score-list-dir"))
@@ -109,7 +109,7 @@ namespace ScoreSolver
                 }
 
                 bool hist = !GetArg("--no-keep-history");
-                prov = new LocalWorkProvider(testLvl, s, hist);
+                prov = new LocalWorkProvider(timeline, simSys, hist);
 
                 if (isLanServer)
                 {
@@ -210,13 +210,51 @@ namespace ScoreSolver
                 Console.WriteLine("===== MAX SCORE =====");
                 Console.WriteLine("score: {0}, attain {1}", maxSol.Score, prov.System.AttainPoint(maxSol));
                 Console.WriteLine(SolutionToPrintableAdvisory(maxSol));
-
             }
 
             if(isLanServer)
             {
                 ((ServerWorkProvider)prov).StopServer();
                 ((ServerWorkReceiverWrapper)recv).StopServer();
+            }
+
+            if (!isLanWorker && maxSol != null)
+            {
+                sw.Reset();
+                Console.Error.WriteLine("[MAIN] Starting optimizer");
+
+                var kb = new SortedList<uint, NoteHitDecisionKind>();
+                foreach(var decision in maxSol.DecisionRecord)
+                {
+                    kb.Add(decision.NoteNumber, decision.DecisionKind);
+                }
+
+                KnowledgeablePlayerSkill optSkill = new KnowledgeablePlayerSkill(
+                    maxSol.NoteNumber,
+                    timeline.EndTime,
+                    kb
+                );
+
+                simSys.PlayerSkill = optSkill;
+
+                prov.CreateStartingElementIfNeeded();
+                solver = new BruteforceHappeningSolver(prov, recv);
+
+                sw.Start();
+                solver.Solve();
+                sw.Stop();
+                Console.Error.WriteLine("[MAIN] Solved in {0}s", sw.Elapsed.TotalSeconds);
+                Console.Error.WriteLine("[MAIN] Good solutions: {0}, bad solutions: {1}, checked solutions: {2} across {3} nodes", recv.Solutions.Count, solver.BadSolutions, solver.CheckedSolutions, solver.CheckedOutcomes);
+                Console.Error.WriteLine("[MAIN] RAM usage peaked at {0}MB", solver.PeakMemoryUse / 1024 / 1024);
+
+                var optSol = recv.Solutions.MaxBy(pn => pn.Score);
+                if (optSol != null)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("===== MAX SCORE OPTIMIZED =====");
+                    Console.WriteLine("score: {0}, attain {1}", optSol.Score, prov.System.AttainPoint(optSol));
+                    Console.WriteLine(SolutionToPrintableAdvisory(optSol));
+                }
             }
 
             if (Debugger.IsAttached)

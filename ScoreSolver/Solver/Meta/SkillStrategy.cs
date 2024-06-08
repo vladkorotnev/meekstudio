@@ -32,6 +32,11 @@ namespace ScoreSolver
             UInt32 c = ((v + (v >> 4) & 0xF0F0F0F) * 0x1010101) >> 24; // count
             return c;
         }
+
+        public static bool IsHitDecision(this NoteHitDecisionKind kind)
+        {
+            return kind == NoteHitDecisionKind.Hit || kind == NoteHitDecisionKind.Switch;
+        }
     }
 
     [Serializable]
@@ -50,7 +55,7 @@ namespace ScoreSolver
         /// <summary>
         /// ms in one game frame
         /// </summary>
-        private const int ONE_FRAME = 17;
+        protected const int ONE_FRAME = 17;
 
         /// <summary>
         /// If set, prohibit generating WORST and WRONG notes
@@ -80,6 +85,22 @@ namespace ScoreSolver
         /// Determine which outcomes are favorable in the current state and at which offset
         /// </summary>
         public abstract NoteHitDecision Decide(SystemState currentState, NoteHappening note, SimulationSystem system);
+
+        public uint FrameLossSwitching(ButtonState original, ButtonState next)
+        {
+            if((next & original) != ButtonState.None)
+            {
+                return FrameLossOnRepress;
+            } 
+            else if(original != ButtonState.None)
+            {
+                return FrameLossOnSwitch;
+            } 
+            else
+            {
+                return 0;
+            }
+        }
     }
 
     /// <summary>
@@ -150,6 +171,117 @@ namespace ScoreSolver
             }
 
             return new NoteHitDecision { Decisions = rslt, Offset = 0 };
+        }
+    }
+
+    /// <summary>
+    /// A player with a knowledge of the playthrough
+    /// Used to optimize offsets when running a second pass of the solver
+    /// </summary>
+    [Serializable]
+    class KnowledgeablePlayerSkill : Skill
+    {
+        /// <summary>
+        /// Previous playthrough decisions, indexed by `NoteNumber`
+        /// </summary>
+        public SortedList<uint, NoteHitDecisionKind> Decisions { get; set; }
+
+        /// <summary>
+        /// Max note number in the level
+        /// </summary>
+        public uint MaxNoteNumber { get; set; }
+
+        /// <summary>
+        /// Time of the end of the level in ticks
+        /// </summary>
+        public uint EndOfLevelTime { get; set; }
+
+        public KnowledgeablePlayerSkill(uint maxNoteNo, uint endTime, SortedList<uint, NoteHitDecisionKind> decisions)
+        {
+            MaxNoteNumber = maxNoteNo;
+            EndOfLevelTime = endTime;
+            Decisions = decisions;
+        }
+
+        private NoteHitDecisionKind LastPlayDecisionAtNumber(uint num)
+        {
+            if(!Decisions.ContainsKey(num))
+            {
+                // No recorded meta means just hit
+                return NoteHitDecisionKind.Hit;
+            }
+            else
+            {
+                return Decisions[num];
+            }
+        }
+
+        public override NoteHitDecision Decide(SystemState currentState, NoteHappening note, SimulationSystem system)
+        {
+            if(
+                currentState.NoteNumber == MaxNoteNumber && 
+                (EndOfLevelTime - currentState.Time) < system.GameRules.MaxTicksInHold && 
+                note.HoldButtons != ButtonState.None &&
+                LastPlayDecisionAtNumber(currentState.NoteNumber).IsHitDecision()
+              )
+            {
+                // This is a final hold note, that we are hitting, and it doesn't give MAX until end of level
+                // What if we can adjust it enough to fit?
+
+                long nominalScore = note.EstimateScoreAtOffset(0, currentState, system) + 
+                    (EndOfLevelTime - currentState.Time - FrameLossSwitching(currentState.HeldButtons, note.PressButtons)) * system.GameRules.HoldBonusFactor;
+
+                long potentialBestScore = nominalScore;
+                NoteHitDecision bestCourseOfAction = new NoteHitDecision { Offset = 0, Decisions = LastPlayDecisionAtNumber(currentState.NoteNumber) };
+
+                foreach (var kind in (HitKind[]) Enum.GetValues(typeof(HitKind)))
+                {
+                    if (kind == HitKind.Wrong || kind == HitKind.Worst) continue;
+                    int offset = -system.GameRules.NoteTiming.For(kind);
+
+                    // check for interference with previous note
+                    if (currentState.Time + offset <= currentState.LastNoteTime) continue;
+
+                    long potentialScore = note.EstimateScoreAtOffset(offset, currentState, system) +
+                    (EndOfLevelTime - (currentState.Time + offset) - FrameLossSwitching(currentState.HeldButtons, note.PressButtons)) * system.GameRules.HoldBonusFactor;
+
+                    if(potentialScore > potentialBestScore)
+                    {
+                        bestCourseOfAction.Offset = offset;
+                        potentialBestScore = potentialScore;
+                    }
+                }
+
+                if(potentialBestScore != nominalScore)
+                {
+                    Console.Error.WriteLine("[2PASS] Note {0} can be offset by {1} to get {2}pts > {3}pts", currentState.NoteNumber, bestCourseOfAction.Offset, potentialBestScore, nominalScore);
+                }
+
+                return bestCourseOfAction;
+            }
+
+            // Simple POC: early catch hold start, late catch old end
+            if(
+                note.HoldButtons != ButtonState.None &&
+                currentState.HeldButtons == ButtonState.None &&
+                LastPlayDecisionAtNumber(currentState.NoteNumber) == NoteHitDecisionKind.Hit
+            )
+            {
+                // Hold starting but not switching or adding, do it early
+                return new NoteHitDecision { Offset = -system.GameRules.NoteTiming.Cool, Decisions = NoteHitDecisionKind.Hit };
+            }
+
+            if (
+                note.HoldButtons == ButtonState.None &&
+                (currentState.HeldButtons & note.PressButtons) != ButtonState.None &&
+                LastPlayDecisionAtNumber(currentState.NoteNumber) == NoteHitDecisionKind.Hit
+            )
+            {
+                // Hold ending but not switching, do it late
+                return new NoteHitDecision { Offset = system.GameRules.NoteTiming.Cool, Decisions = NoteHitDecisionKind.Hit };
+            }
+
+            return new NoteHitDecision { Offset = 0, Decisions = LastPlayDecisionAtNumber(currentState.NoteNumber) };
         }
     }
 }

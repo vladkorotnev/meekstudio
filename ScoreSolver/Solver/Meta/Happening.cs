@@ -145,6 +145,7 @@ namespace ScoreSolver
         protected List<SystemState> FindOutcomesAtTimeOffset(ref List<SystemState> variants, NoteHitDecisionKind todos, SystemState s, SimulationSystem system, int timeOffset)
         {
             s = system.PassTime(s, (uint) (Time + timeOffset));
+            s.LastNoteTime = (uint) (Time + timeOffset);
 
             uint i = todos.Count();
             foreach(var option in todos.AllCases())
@@ -183,6 +184,26 @@ namespace ScoreSolver
             return variants;
         }
 
+        public long EstimateScoreAtOffset(int offset, SystemState state, SimulationSystem system)
+        {
+            var decision = system.DecideNoteTimingByOffset(offset);
+
+            long score = system.GameRules.ButtonScore.Correct.For(decision.Kind) * Util.CountButtons(PressButtons);
+            int life = system.GameRules.LifeScore.Correct.For(decision.Kind);
+
+            if (state.Life == SystemState.MAX_LIFE && life > 0)
+            {
+                score += system.GameRules.LifeBonus;
+            }
+
+            if(decision.Kind == HitKind.Cool || decision.Kind == HitKind.Fine)
+            {
+                score += system.GameRules.ComboBonus(state.Combo + 1);
+            }
+
+            return score;
+        }
+
         /// <summary>
         /// Singular hit state transition for all incoming notes
         /// </summary>
@@ -214,21 +235,6 @@ namespace ScoreSolver
             return currentState;
         }
 
-        public uint FrameLossSwitchingWith(ButtonState other, Skill skill)
-        {
-            if((PressButtons & other) != ButtonState.None)
-            {
-                // there will be a repress in this switchover
-                // account for point loss in the re-press
-                return skill.FrameLossOnRepress;
-            } 
-            else
-            {
-                // just a switchover
-                // account for point loss in the switchover
-                return skill.FrameLossOnSwitch;
-            }
-        }
 
         /// <summary>
         /// Hit state transition for all incoming notes, which also will hold the newly incoming hold notes
@@ -240,7 +246,7 @@ namespace ScoreSolver
 
             if (nextState.HeldButtons != ButtonState.None)
             {
-                nextState.Time += FrameLossSwitchingWith(nextState.HeldButtons, system.PlayerSkill);
+                nextState.Time += system.PlayerSkill.FrameLossSwitching(nextState.HeldButtons, PressButtons);
             }
 
             // start holding if anything to hold is present
