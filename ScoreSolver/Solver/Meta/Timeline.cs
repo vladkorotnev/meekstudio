@@ -57,6 +57,20 @@ namespace ScoreSolver
             }
         }
 
+        public NoteHappening NextNoteFromTime(uint time)
+        {
+            Happening h;
+            do
+            {
+                h = NextHappeningFromTime(time);
+                if (h is NoteHappening n) return n;
+                if (h is null) return null;
+                time = h.Time;
+            } while (h != null);
+
+            return null;
+        }
+
         public void InvalidateIndex()
         {
             EventTimes = new List<uint>(Events.Select(x => x.Time));

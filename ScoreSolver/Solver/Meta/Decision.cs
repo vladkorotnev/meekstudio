@@ -51,7 +51,7 @@ namespace ScoreSolver
 
         public override string ToString()
         {
-            return "Keep holding, get WORST: " + Util.ButtonsToString(Buttons);
+            return "WORST: " + Util.ButtonsToString(Buttons);
         }
     }
 
@@ -70,7 +70,7 @@ namespace ScoreSolver
 
         public override string ToString()
         {
-            return "Keep holding, get WRONG: " + Util.ButtonsToString(Buttons);
+            return "WRONG: " + Util.ButtonsToString(Buttons);
         }
     }
 
@@ -110,7 +110,7 @@ namespace ScoreSolver
 
         public override string ToString()
         {
-            if (NewButtons == ButtonState.None) return "Let go: " + Util.ButtonsToString(OldButtons);
+            if (NewButtons == ButtonState.None) return "";
             return Util.ButtonsToString(OldButtons) + " -> " + Util.ButtonsToString(NewButtons);
         }
     }

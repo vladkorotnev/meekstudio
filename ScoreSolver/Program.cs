@@ -194,13 +194,23 @@ namespace ScoreSolver
             if (GetArg("--limiter"))
                 solver.ThreadLimiterCount = int.Parse(GetArgParam("--limiter"));
 
+            if(!GetArg("--no-preoptim"))
+            {
+                Console.Error.WriteLine("[MAIN] Priming the solver by solving for perfect casual playthrough");
+                Skill tmp = simSys.PlayerSkill;
+
+                simSys.PlayerSkill = new CasualSkill();
+                solver.Solve();
+
+                simSys.PlayerSkill = tmp;
+                prov.CreateStartingElementIfNeeded();
+            }
+
             Console.Error.WriteLine("[MAIN] Starting solver");
             sw.Start();
             solver.Solve();
             sw.Stop();
-            Console.Error.WriteLine("[MAIN] Solved in {0}s", sw.Elapsed.TotalSeconds);
-            Console.Error.WriteLine("[MAIN] Good solutions: {0}, bad solutions: {1}, checked solutions: {2} across {3} nodes", recv.Solutions.Count, solver.BadSolutions, solver.CheckedSolutions, solver.CheckedOutcomes);
-            Console.Error.WriteLine("[MAIN] RAM usage peaked at {0}MB", solver.PeakMemoryUse/1024/1024);
+            Console.Error.WriteLine("[MAIN] Completed in {0}s", sw.Elapsed.TotalSeconds);
 
 
             var maxSol = recv.Solutions.MaxBy(pn => pn.Score);
@@ -218,7 +228,7 @@ namespace ScoreSolver
                 ((ServerWorkReceiverWrapper)recv).StopServer();
             }
 
-            if (!isLanWorker && maxSol != null)
+            if (!isLanWorker && maxSol != null && !GetArg("--single-pass"))
             {
                 sw.Reset();
                 Console.Error.WriteLine("[MAIN] Starting optimizer");
@@ -232,7 +242,8 @@ namespace ScoreSolver
                 KnowledgeablePlayerSkill optSkill = new KnowledgeablePlayerSkill(
                     maxSol.NoteNumber,
                     timeline.EndTime,
-                    kb
+                    kb,
+                    timeline
                 );
 
                 simSys.PlayerSkill = optSkill;
@@ -243,9 +254,7 @@ namespace ScoreSolver
                 sw.Start();
                 solver.Solve();
                 sw.Stop();
-                Console.Error.WriteLine("[MAIN] Solved in {0}s", sw.Elapsed.TotalSeconds);
-                Console.Error.WriteLine("[MAIN] Good solutions: {0}, bad solutions: {1}, checked solutions: {2} across {3} nodes", recv.Solutions.Count, solver.BadSolutions, solver.CheckedSolutions, solver.CheckedOutcomes);
-                Console.Error.WriteLine("[MAIN] RAM usage peaked at {0}MB", solver.PeakMemoryUse / 1024 / 1024);
+                Console.Error.WriteLine("[MAIN] Completed in {0}s", sw.Elapsed.TotalSeconds);
 
                 var optSol = recv.Solutions.MaxBy(pn => pn.Score);
                 if (optSol != null)
@@ -281,6 +290,8 @@ namespace ScoreSolver
 
             Console.WriteLine("Optional arguments:");
             Console.WriteLine("--naive:                   use naive non-optimized solver aka bruteforce mode");
+            Console.WriteLine("--single-pass:             don't run the late/fast optimizer after finding the solution");
+            Console.WriteLine("--no-preoptim:             don't run the casual baseline route first: e.g. if you want to find hidden switchovers");
             Console.WriteLine("--broad-first:             use broad-first search in optimized solver (save RAM?)");
             Console.WriteLine("--no-worst-wrong:          search the perfect route (without misses or wrong notes)");
             Console.WriteLine("--checkpoints-by-time:     place checkpoints by time rather than combo (can affect precision)");
@@ -317,7 +328,9 @@ namespace ScoreSolver
             StringBuilder sb = new StringBuilder();
             foreach(var decision in solution.DecisionRecord)
             {
-                sb.Append(String.Format("[Time {0} / Combo {1} / Note# {3}] {2}\n", FmtTime(decision.Time), decision.Combo, decision.ToString(), decision.NoteNumber));
+                String d = decision.ToString();
+                if (d.Length == 0) continue;
+                sb.Append(String.Format("[Time {0} / Combo {1} / Note# {3}] {2}\n", FmtTime(decision.Time), decision.Combo, d, decision.NoteNumber));
             }
 
             return sb.ToString();

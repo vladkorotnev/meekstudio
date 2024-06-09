@@ -104,6 +104,39 @@ namespace ScoreSolver
     }
 
     /// <summary>
+    /// A casual player skill, always hits straight Cool, no switches nothing else
+    /// </summary>
+    [Serializable]
+    class CasualSkill : Skill
+    {
+        public override NoteHitDecision Decide(SystemState currentState, NoteHappening note, SimulationSystem system)
+        {
+            NoteHitDecisionKind rslt = NoteHitDecisionKind.Undecided_Invalid;
+
+            if (currentState.HeldButtons == ButtonState.None)
+            {
+                // We are not holding anything right now, so we can hold anything that comes our way
+                rslt = NoteHitDecisionKind.Hit;
+            }
+            else
+            {
+                if ((currentState.HeldButtons & note.PressButtons) == ButtonState.None)
+                {
+                    // We are holding something, but it does not interfere with the incoming note
+                    rslt = NoteHitDecisionKind.Hit;
+                }
+                else if ((currentState.HeldButtons & note.PressButtons) != ButtonState.None)
+                {
+                    // We are holding something and it DOES interfere with the incoming note
+                    rslt |= NoteHitDecisionKind.Switch;
+                }
+            }
+
+            return new NoteHitDecision { Decisions = rslt, Offset = 0 };
+        }
+    }
+
+    /// <summary>
     /// A generic player skill, tailored to All Cool routes
     /// </summary>
     [Serializable]
@@ -196,11 +229,14 @@ namespace ScoreSolver
         /// </summary>
         public uint EndOfLevelTime { get; set; }
 
-        public KnowledgeablePlayerSkill(uint maxNoteNo, uint endTime, SortedList<uint, NoteHitDecisionKind> decisions)
+        public HappeningSet Timeline { get; set; }
+
+        public KnowledgeablePlayerSkill(uint maxNoteNo, uint endTime, SortedList<uint, NoteHitDecisionKind> decisions, HappeningSet timeline)
         {
             MaxNoteNumber = maxNoteNo;
             EndOfLevelTime = endTime;
             Decisions = decisions;
+            Timeline = timeline;
         }
 
         private NoteHitDecisionKind LastPlayDecisionAtNumber(uint num)
@@ -216,9 +252,23 @@ namespace ScoreSolver
             }
         }
 
+        private NoteHappening NextHittedNoteFromTime(uint time, SystemState state)
+        {
+            uint noteNo = state.NoteNumber + 1;
+            NoteHappening n = Timeline.NextNoteFromTime(time);
+            while(n != null && !LastPlayDecisionAtNumber(noteNo).IsHitDecision())
+            {
+                noteNo += 1;
+                n = Timeline.NextNoteFromTime(n.Time);
+            }
+
+            return n;
+        }
+
         public override NoteHitDecision Decide(SystemState currentState, NoteHappening note, SimulationSystem system)
         {
-            if(
+            #region Special case: Final Hold Note
+            if (
                 currentState.NoteNumber == MaxNoteNumber && 
                 (EndOfLevelTime - currentState.Time) < system.GameRules.MaxTicksInHold && 
                 note.HoldButtons != ButtonState.None &&
@@ -259,28 +309,52 @@ namespace ScoreSolver
 
                 return bestCourseOfAction;
             }
+            #endregion
 
-            // Simple POC: early catch hold start, late catch old end
+
+            #region Simple hold add-remove rules
+
             if(
                 note.HoldButtons != ButtonState.None &&
-                currentState.HeldButtons == ButtonState.None &&
-                LastPlayDecisionAtNumber(currentState.NoteNumber) == NoteHitDecisionKind.Hit
-            )
+                // Case 1.1: Increasing number of holds
+                (((note.PressButtons & currentState.HeldButtons) == ButtonState.None &&
+                LastPlayDecisionAtNumber(currentState.NoteNumber) == NoteHitDecisionKind.Hit) ||
+
+                // Case 1.2: Switch to a bigger number of holds
+                (Util.CountButtons(note.HoldButtons) > Util.CountButtons(currentState.HeldButtons) &&
+                 LastPlayDecisionAtNumber(currentState.NoteNumber) == NoteHitDecisionKind.Switch)) &&
+
+                 // BUT only if it's not the last one before a surefire MAX
+                 // (thus a new hold, or the time between this and next note is > Max [TODO: check for interfering notes only])
+                 (currentState.HeldButtons == ButtonState.None || (currentState.NoteNumber != MaxNoteNumber && 
+                   (NextHittedNoteFromTime(note.Time, currentState).Time - currentState.Time) < system.GameRules.MaxTicksInHold))
+              )
             {
-                // Hold starting but not switching or adding, do it early
-                return new NoteHitDecision { Offset = -system.GameRules.NoteTiming.Cool, Decisions = NoteHitDecisionKind.Hit };
+                // Prefer to go earlier
+                // For now stub to early cool, TODO more flexibility
+                return new NoteHitDecision { Offset = -system.GameRules.NoteTiming.Cool, Decisions = LastPlayDecisionAtNumber(currentState.NoteNumber) };
             }
 
-            if (
-                note.HoldButtons == ButtonState.None &&
-                (currentState.HeldButtons & note.PressButtons) != ButtonState.None &&
-                LastPlayDecisionAtNumber(currentState.NoteNumber) == NoteHitDecisionKind.Hit
-            )
+            if(
+                currentState.HeldButtons != ButtonState.None &&
+                (
+                    // Case 2.1: Reduce number of holds
+                    (Util.CountButtons(note.HoldButtons) < Util.CountButtons(currentState.HeldButtons) &&
+                     LastPlayDecisionAtNumber(currentState.NoteNumber) == NoteHitDecisionKind.Switch) ||
+                     // Case 2.2 Switch to a bigger number of holds AND it's the last one before a MAX
+                     (currentState.HeldButtons != ButtonState.None && (currentState.NoteNumber != MaxNoteNumber &&
+                   (NextHittedNoteFromTime(note.Time, currentState).Time - note.Time) >= system.GameRules.MaxTicksInHold))
+                )
+             )
             {
-                // Hold ending but not switching, do it late
-                return new NoteHitDecision { Offset = system.GameRules.NoteTiming.Cool, Decisions = NoteHitDecisionKind.Hit };
+                // Prefer to go late
+                return new NoteHitDecision { Offset = system.GameRules.NoteTiming.Cool, Decisions = LastPlayDecisionAtNumber(currentState.NoteNumber) };
             }
 
+            #endregion
+
+
+            // No other decision was made
             return new NoteHitDecision { Offset = 0, Decisions = LastPlayDecisionAtNumber(currentState.NoteNumber) };
         }
     }

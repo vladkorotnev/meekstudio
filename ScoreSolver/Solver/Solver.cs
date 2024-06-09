@@ -78,6 +78,14 @@ namespace ScoreSolver
             ThreadPool.SetMaxThreads(ParallelWorkerCount, ParallelWorkerCount);
 
             Stopwatch sw = new Stopwatch();
+            Stopwatch total = new Stopwatch();
+
+            try
+            {
+                GC.TryStartNoGCRegion(10 * 1024L * 1024L);
+                GC.RemoveMemoryPressure(1024L * 1024L * 1024L);
+            }
+            catch (Exception) { }
 
             Thread sched = new Thread(new ThreadStart(AsyncSchedulerThread));
             sched.Start();
@@ -86,14 +94,7 @@ namespace ScoreSolver
             long lastChkSol = 0;
             long lastChkNode = 0;
             sw.Start();
-
-
-            try
-            {
-                GC.TryStartNoGCRegion(10 * 1024L * 1024L);
-                GC.RemoveMemoryPressure(1024L * 1024L * 1024L);
-            }
-            catch (Exception) { }
+            total.Start();
 
             while(sched.IsAlive)
             {
@@ -124,6 +125,12 @@ namespace ScoreSolver
                     sw.Restart();
                 }
             }
+
+            total.Stop();
+
+            Console.Error.WriteLine("[SOLV] Solved in {0}s", total.Elapsed.TotalSeconds);
+            Console.Error.WriteLine("[SOLV] Good solutions: {0}, bad solutions: {1}, checked solutions: {2} across {3} nodes", Receiver.Solutions.Count, BadSolutions, CheckedSolutions, CheckedOutcomes);
+            Console.Error.WriteLine("[SOLV] RAM usage peaked at {0}MB", PeakMemoryUse / 1024 / 1024);
 
             GC.Collect();
         }
