@@ -348,7 +348,7 @@ icon by @hatsune_negame</value>
     <value>Tahoma, 9pt</value>
   </data>
   <data name="createToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+Shift+N</value>
+    <value>Control+Shift+N</value>
   </data>
   <data name="createToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>196, 22</value>
@@ -360,7 +360,7 @@ icon by @hatsune_negame</value>
     <value>193, 6</value>
   </data>
   <data name="openToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+O</value>
+    <value>Control+O</value>
   </data>
   <data name="openToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>196, 22</value>
@@ -378,7 +378,7 @@ icon by @hatsune_negame</value>
     <value>False</value>
   </data>
   <data name="saveToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+S</value>
+    <value>Control+S</value>
   </data>
   <data name="saveToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>196, 22</value>
@@ -390,7 +390,7 @@ icon by @hatsune_negame</value>
     <value>False</value>
   </data>
   <data name="saveAllToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+Alt+S</value>
+    <value>Control+Alt+S</value>
   </data>
   <data name="saveAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>196, 22</value>
@@ -483,7 +483,7 @@ icon by @hatsune_negame</value>
     <value>False</value>
   </data>
   <data name="evaluateCurrentFileToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+F9</value>
+    <value>Control+F9</value>
   </data>
   <data name="evaluateCurrentFileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>266, 22</value>
@@ -534,7 +534,7 @@ icon by @hatsune_negame</value>
     <value>263, 6</value>
   </data>
   <data name="playMovieToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+F5</value>
+    <value>Control+F5</value>
   </data>
   <data name="playMovieToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>266, 22</value>
