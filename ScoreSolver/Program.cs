@@ -330,7 +330,7 @@ namespace ScoreSolver
             {
                 String d = decision.ToString();
                 if (d.Length == 0) continue;
-                sb.Append(String.Format("[Time {0} / Combo {1} / Note# {3}] {2}\n", FmtTime(decision.Time), decision.Combo, d, decision.NoteNumber));
+                sb.Append(String.Format("[Time {0} / Combo {1} / Note# {3} / {4}] {2}\n", FmtTime(decision.Time), decision.Combo, d, decision.NoteNumber, decision.Score));
             }
 
             return sb.ToString();

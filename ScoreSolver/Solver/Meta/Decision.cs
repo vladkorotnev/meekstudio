@@ -14,6 +14,7 @@ namespace ScoreSolver
         public uint Time { get; set; }
         public uint Combo { get; set; }
         public uint NoteNumber { get; set; }
+        public long Score { get; set; }
         public NoteHitDecisionKind DecisionKind { get; set; }
         public abstract override string ToString();
     }

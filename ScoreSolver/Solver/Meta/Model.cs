@@ -279,6 +279,7 @@ namespace ScoreSolver
             d.Time = Time;
             d.Combo = Combo;
             d.NoteNumber = NoteNumber;
+            d.Score = Score;
             _decisionRecord.AddLast(d);
         }
 
